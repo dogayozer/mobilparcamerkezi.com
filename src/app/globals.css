@@ -1,0 +1,132 @@
+@import "tailwindcss";
+
+/*
+ * Marka renk paleti — mobilparcamerkezi.com logosundan (lacivert + kırmızı)
+ * türetilmiştir. Mevcut --primary / --background gibi değişkenler
+ * bozulmadan bırakıldı; bu token'lar ek olarak tanımlanıyor.
+ */
+@theme {
+  --color-brand-navy-50: #eff6fd;
+  --color-brand-navy-100: #dbebfb;
+  --color-brand-navy-200: #b2d4f6;
+  --color-brand-navy-300: #7bb5ef;
+  --color-brand-navy-400: #4094e8;
+  --color-brand-navy-500: #1975d2;
+  --color-brand-navy-600: #145ea9;
+  --color-brand-navy-700: #104a84;
+  --color-brand-navy-800: #0c3864;
+  --color-brand-navy-900: #092949;
+  --color-brand-navy-950: #051729;
+
+  --color-brand-red-50: #fdefef;
+  --color-brand-red-100: #fbdada;
+  --color-brand-red-200: #f7b0b0;
+  --color-brand-red-300: #f17979;
+  --color-brand-red-400: #eb3c3c;
+  --color-brand-red-500: #d51616;
+  --color-brand-red-600: #ab1111;
+  --color-brand-red-700: #860e0e;
+  --color-brand-red-800: #660a0a;
+  --color-brand-red-900: #4a0707;
+  --color-brand-red-950: #2a0404;
+}
+
+@layer base {
+  :root {
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 210 40% 98%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --border: 214 32% 91%;
+    --ring: 217 91% 60%;
+  }
+
+  body {
+    background-color: #f8fafc;
+    color: #0f172a;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+/* Glassmorphism Styles */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+.glass-card-dark {
+  background: rgba(9, 41, 73, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-nav {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+/* Glow Effects — marka lacivert/kırmızı tonlarına uyarlandı */
+.glow-primary {
+  box-shadow: 0 0 25px -5px rgba(12, 56, 100, 0.35);
+}
+
+.glow-blue-sm {
+  box-shadow: 0 0 15px -3px rgba(20, 94, 169, 0.35);
+}
+
+.glow-accent {
+  box-shadow: 0 0 25px -5px rgba(213, 22, 22, 0.35);
+}
+
+/* Modern Card Hover Transitions */
+.card-hover-effect {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-hover-effect:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px -10px rgba(9, 41, 73, 0.16);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Animations */
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.03);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 3s infinite ease-in-out;
+}

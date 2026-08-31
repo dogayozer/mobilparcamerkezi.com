@@ -1,0 +1,179 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id           String    @id @default(cuid())
+  name         String
+  slug         String    @unique
+  risk_profile String?   // Estetik, Fiziksel Güvenlik vs.
+  template_type String   // case, keypad, charger, cable, battery, protector, generic
+  products     Product[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model Product {
+  id                  String           @id @default(cuid())
+  barcode             String           @unique // sku_barcode, main matching key
+  model_code          String?          // internal_model_code
+  brand               String?
+  categoryId          String?
+  category            Category?        @relation(fields: [categoryId], references: [id])
+  title               String
+  slug                String           @unique
+  description_raw     String?          // from Excel
+  description_html    String?          // SEO optimized
+  reference_price     Float?           // Piyasa Satış Fiyatı
+  sale_price          Float            // Trendyol'da Satılacak Fiyat
+  original_excel_price Float?          // Orijinal Excel N sütunu fiyatı
+  mpm_sale_price      Float?           // Mobil Parça Merkezi Satış Fiyatı (marka bazlı)
+  mpm_reference_price Float?           // Mobil Parça Merkezi Referans Fiyatı (marka bazlı)
+  stock_qty           Int              @default(0)
+  status              String           @default("inactive") // active, inactive, out_of_stock
+  trendyol_url        String?
+  compatible_models   String?          // JSON array stored as string or comma separated
+  images              ProductImage[]
+  variants            ProductVariant[]
+  priceHistory        PriceHistory[]
+  orderItems          OrderItem[]
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+  last_synced_at      DateTime?
+}
+
+model ProductVariant {
+  id          String   @id @default(cuid())
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  color       String?  // variant_color
+  stock_qty   Int      @default(0)
+}
+
+model ProductImage {
+  id          String   @id @default(cuid())
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url         String   // Local CDN or optimized URL
+  originalUrl String?  // Trendyol CDN URL
+  order       Int      @default(0)
+}
+
+model Customer {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  password    String?
+  name        String?
+  phone       String?
+  city        String?
+  district    String?
+  address     String?
+  isGuest     Boolean  @default(false)
+  orders      Order[]
+  createdAt   DateTime @default(now())
+}
+
+model Order {
+  id            String      @id @default(cuid())
+  orderNumber   String      @unique
+  customerId    String?
+  customer      Customer?   @relation(fields: [customerId], references: [id])
+  totalAmount   Float
+  discountApplied Float     @default(0)
+  couponCode    String?
+  shippingCost  Float       @default(0)
+  shippingCity  String?
+  shippingDistrict String?
+  shippingAddress String?
+  shippingCompany String?     // Kargo Firması (Örn: Yurtiçi Kargo)
+  trackingNumber  String?     // Kargo Takip No
+  status        String      @default("pending") // pending, processing, shipped, delivered, cancelled
+  store         String      @default("fodos") // fodos, mpm — hangi markadan geldiği
+  adminNote     String?     // Admin tarafından siparişe eklenen özel not
+  invoiceStatus String      @default("pending") // pending, invoiced, cancelled, failed
+  invoiceFailReason String?   // Fatura Red Sebebi
+  invoiceNumber String?     // E-Fatura / E-Arşiv No
+  invoiceUrl    String?     // BirFatura Fatura PDF URL
+  invoicedAt    DateTime?   // Faturalanma Tarihi
+  taxNumber     String?     // TC Kimlik No veya Vergi No
+  taxOffice     String?     // Vergi Dairesi
+  companyTitle  String?     // Şirket Unvanı
+  items         OrderItem[]
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model Coupon {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  type        String   // percentage, fixed
+  value       Float
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model OrderItem {
+  id          String   @id @default(cuid())
+  orderId     String
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id])
+  quantity    Int
+  price       Float
+}
+
+model PriceHistory {
+  id          String   @id @default(cuid())
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  oldPrice    Float
+  newPrice    Float
+  changedAt   DateTime @default(now())
+}
+
+model TrendyolSyncLog {
+  id            String   @id @default(cuid())
+  filename      String
+  status        String   // processing, success, failed
+  summary       String?  // e.g. "100 created, 20 updated"
+  startedAt     DateTime @default(now())
+  completedAt   DateTime?
+}
+
+model StoreSettings {
+  id                    String   @id @default("default")
+  companyName           String?
+  address               String?
+  phone                 String?
+  taxId                 String?
+  email                 String?
+  whatsappPhone         String?
+  shippingThreshold     Float?   @default(500)
+  shippingFee           Float?   @default(110)
+  sameDayShippingTime   String?  @default("16:00")
+  aboutUs               String?
+  mesafeliSatisHtml     String?
+  gizlilikGuvenlikHtml  String?
+  iptalIadeHtml         String?
+  kargoTakipHtml        String?
+  kisiselVerilerHtml    String?
+  birfaturaApiKey       String?  // BirFatura Entegrasyon API Anahtarı
+  birfaturaKdvRate      Int?     @default(20) // Varsayılan KDV Oranı
+  birfaturaAutoSync     Boolean? @default(true) // Otomatik Senkronizasyon
+  updatedAt             DateTime @updatedAt
+}
+
+model ChatLog {
+  id        String   @id @default(cuid())
+  sessionId String?  // To group messages from the same chat session
+  message   String   // The user's query
+  response  String?  // The AI's response (or tool output summary)
+  isFound   Boolean  @default(false) // Did the searchProducts tool find anything?
+  createdAt DateTime @default(now())
+}

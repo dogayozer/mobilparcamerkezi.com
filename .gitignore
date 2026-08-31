@@ -1,0 +1,50 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+.yarn/cache
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# local env files
+.env*.local
+.env
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# fodos-cloude'dan kopyalanan, mobilparcamerkezi Next.js uygulamasıyla ilgisi olmayan
+# dosya/klasörler (marka/fiyat dokümanları, eski proje kopyaları vb.) — repo'ya dahil edilmiyor
+/fodos-ecommerce/
+/v1.14/
+/yedek/
+/.tmp.driveupload/
+*.xlsx
+*.docx
+*.pdf
+*.mp4
+*.zip
+*.csv
+process_excel.py
+antigravity-web-brief.md
+birfatura-kodlari.md
+fodos-birfatura-*.md
+.~lock.*

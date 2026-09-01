@@ -5,6 +5,7 @@ import { prisma } from '@/lib/prisma'
 import ProductCard from '@/components/ProductCard'
 import { withMpmPrice } from '@/lib/utils'
 import { ChevronRight, Filter, SlidersHorizontal, Smartphone } from 'lucide-react'
+import type { Metadata } from 'next'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -12,6 +13,35 @@ interface Props {
 }
 
 export const revalidate = 60
+
+const MAX_TITLE = 60
+const MAX_DESC = 155
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.mobilparcamerkezi.com'
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params
+  const category = await prisma.category.findUnique({ where: { slug }, select: { name: true } })
+
+  if (!category) {
+    return { title: 'Kategori Bulunamadı | Mobil Parça Merkezi' }
+  }
+
+  const pageTitle = `${category.name} | MPM`.length <= MAX_TITLE ? `${category.name} | MPM` : category.name.slice(0, MAX_TITLE - 1).trim() + '…'
+  const desc = `${category.name} çeşitleri uygun fiyatlarla Mobil Parça Merkezi'nde. Garantili, test edilmiş yedek parçalar ve aynı gün kargo.`
+  const pageDescription = desc.length > MAX_DESC ? desc.slice(0, MAX_DESC - 1).trim() + '…' : desc
+
+  return {
+    title: pageTitle,
+    description: pageDescription,
+    alternates: {
+      canonical: `${SITE_URL}/kategori/${slug}`,
+    },
+    openGraph: {
+      title: pageTitle,
+      description: pageDescription,
+    },
+  }
+}
 
 export default async function CategoryPage({ params, searchParams }: Props) {
   const { slug } = await params

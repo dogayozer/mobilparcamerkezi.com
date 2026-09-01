@@ -13,7 +13,8 @@ import {
   BatteryCharging,
   Cpu,
   Layers,
-  ArrowRight
+  ArrowRight,
+  CheckCircle2
 } from 'lucide-react'
 
 interface HeroBannerProps {
@@ -40,59 +41,58 @@ export default function HeroBanner({ brands = [], categories = [] }: HeroBannerP
   }
 
   const popularBrands = [
-    { name: 'Apple iPhone', slug: 'apple', color: 'from-brand-navy-950 to-brand-navy-900' },
-    { name: 'Samsung', slug: 'samsung', color: 'from-brand-navy-900 to-brand-navy-800' },
-    { name: 'Xiaomi & Redmi', slug: 'xiaomi', color: 'from-orange-950 to-amber-900' },
-    { name: 'Huawei', slug: 'huawei', color: 'from-brand-red-950 to-brand-red-900' },
-    { name: 'Oppo & Realme', slug: 'oppo', color: 'from-emerald-950 to-teal-900' },
-    { name: 'Nokia / Tuşlu', slug: 'nokia', color: 'from-brand-navy-900 to-brand-navy-800' },
+    { name: 'Apple iPhone', slug: 'apple' },
+    { name: 'Samsung', slug: 'samsung' },
+    { name: 'Xiaomi & Redmi', slug: 'xiaomi' },
+    { name: 'Huawei', slug: 'huawei' },
+    { name: 'Oppo & Realme', slug: 'oppo' },
+    { name: 'Nokia / Tuşlu', slug: 'nokia' },
+  ]
+
+  const quickCats = [
+    { href: '/kategori/batarya', icon: BatteryCharging, title: 'Bataryalar', desc: 'Yüksek kapasiteli, orijinal korumalı piller' },
+    { href: '/kategori/kasa', icon: Smartphone, title: 'Kasa & Kapaklar', desc: 'Birebir oturan tam uyumlu arka gövde' },
+    { href: '/kategori/sarj-aleti', icon: Zap, title: 'Şarj & Kablolar', desc: 'Hızlı şarj destekli adaptör ve kablolar' },
+    { href: '/kategori/tus-takimi', icon: Layers, title: 'Tuş Takımı & Flex', desc: 'Tüm klasik ve yeni tuşlu modeller' },
   ]
 
   return (
-    <div className="relative overflow-hidden bg-brand-navy-950 text-white py-12 lg:py-16">
-      {/* Background Tech Mesh & Glow */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#0c3864_1px,transparent_1px),linear-gradient(to_bottom,#0c3864_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-30" />
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[350px] bg-gradient-to-tr from-brand-navy-600/25 via-brand-red-600/15 to-brand-navy-400/10 blur-[100px] rounded-full pointer-events-none" />
+    <div className="relative overflow-hidden bg-ink text-[#f3ede0]">
+      <div className="absolute inset-0 grid-tex opacity-60 [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 lg:pt-16">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center pb-12">
           {/* Left Column: Headline & Quick Device Selector */}
           <div className="lg:col-span-7 space-y-6">
             {/* Top Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-red-500/10 border border-brand-red-500/30 text-brand-red-300 text-xs font-bold tracking-wide">
-              <Sparkles className="w-3.5 h-3.5 text-brand-red-400 animate-pulse" />
-              <span>SİRKECİ'DEN TÜRKİYE'YE TOPTAN YEDEK PARÇA</span>
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-md bg-yellow-500/10 border border-yellow-500/40 text-yellow-500 text-[11px] font-mono font-bold tracking-wide">
+              <span className="w-1.5 h-1.5 bg-yellow-500" />
+              <span>SİRKECİ'DEN TÜRKİYE'YE TOPTAN SEVKİYAT</span>
             </div>
 
             {/* Main Title */}
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight">
-              Cihazınız İçin <br />
-              <span className="bg-gradient-to-r from-brand-navy-300 via-brand-navy-200 to-brand-red-300 bg-clip-text text-transparent">
-                %100 Uyumlu & Test Edilmiş
-              </span>{' '}
-              Yedek Parçalar
+            <h1 className="font-display uppercase text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[0.98]">
+              Cihazınıza <span className="text-yellow-500">Tam Uyumlu</span> Yedek Parça
             </h1>
 
-            <p className="text-sm sm:text-base text-slate-300 max-w-xl font-normal leading-relaxed">
+            <p className="text-sm sm:text-base text-[#b8b0a0] max-w-xl font-normal leading-relaxed">
               Telefon bataryası, kasa, kapak, şarj soketi, tuş takımı ve koruyucu camlarda en yüksek kalite standardı. Saat 16:30'a kadar aynı gün kargo avantajıyla.
             </p>
 
             {/* Smart Device Finder Widget */}
-            <div className="p-4 sm:p-5 rounded-2xl bg-brand-navy-900/80 border border-brand-navy-800 backdrop-blur-md shadow-2xl">
-              <div className="flex items-center gap-2 mb-3 text-xs font-bold text-slate-200">
-                <Cpu className="w-4 h-4 text-brand-red-400" />
-                <span>HIZLI MODEL & PARÇA BULUCU</span>
+            <div className="p-4 sm:p-5 rounded-md bg-white/[0.03] border border-yellow-500/25">
+              <div className="flex items-center gap-2 mb-3 text-[11px] font-mono font-bold text-yellow-500 uppercase tracking-wider">
+                <Cpu className="w-4 h-4" />
+                <span>Model Uyumluluk Sorgusu</span>
               </div>
 
               <form onSubmit={handleFinderSubmit} className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                 <div>
-                  <label className="block text-[11px] font-semibold text-slate-400 mb-1">
-                    1. Marka
-                  </label>
+                  <label className="block text-[10px] font-mono text-[#8a8272] mb-1 uppercase">1. Marka</label>
                   <select
                     value={selectedBrand}
                     onChange={(e) => setSelectedBrand(e.target.value)}
-                    className="w-full bg-brand-navy-950 border border-brand-navy-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-brand-red-500"
+                    className="w-full bg-ink-900 border border-yellow-500/20 rounded-md px-3 py-2 text-xs text-[#f3ede0] focus:outline-none focus:border-yellow-500"
                   >
                     <option value="">Tüm Markalar</option>
                     <option value="Apple">Apple iPhone</option>
@@ -106,22 +106,20 @@ export default function HeroBanner({ brands = [], categories = [] }: HeroBannerP
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-semibold text-slate-400 mb-1">
-                    2. Cihaz Modeli
-                  </label>
+                  <label className="block text-[10px] font-mono text-[#8a8272] mb-1 uppercase">2. Cihaz Modeli</label>
                   <input
                     type="text"
                     value={deviceModel}
                     onChange={(e) => setDeviceModel(e.target.value)}
                     placeholder="Örn: iPhone 11, Note 8"
-                    className="w-full bg-brand-navy-950 border border-brand-navy-700 rounded-xl px-3 py-2 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-brand-red-500"
+                    className="w-full bg-ink-900 border border-yellow-500/20 rounded-md px-3 py-2 text-xs text-[#f3ede0] placeholder:text-[#5c5548] focus:outline-none focus:border-yellow-500"
                   />
                 </div>
 
                 <div className="flex flex-col justify-end">
                   <button
                     type="submit"
-                    className="w-full py-2 px-4 rounded-xl bg-gradient-to-r from-brand-red-600 to-brand-red-500 hover:from-brand-red-500 hover:to-brand-red-400 text-white text-xs font-extrabold flex items-center justify-center gap-2 shadow-lg shadow-brand-red-600/30 transition duration-200"
+                    className="w-full py-2 px-4 rounded-md bg-yellow-500 hover:bg-yellow-400 text-ink text-xs font-display font-bold uppercase flex items-center justify-center gap-2 transition duration-200"
                   >
                     <Search className="w-3.5 h-3.5" />
                     <span>Parçaları Bul</span>
@@ -131,65 +129,64 @@ export default function HeroBanner({ brands = [], categories = [] }: HeroBannerP
             </div>
           </div>
 
-          {/* Right Column: Featured Quick Categories Cards */}
-          <div className="lg:col-span-5 grid grid-cols-2 gap-3.5">
-            <Link
-              href="/kategori/batarya"
-              className="group p-4 rounded-2xl bg-gradient-to-br from-brand-navy-900 to-brand-navy-800 border border-brand-navy-800 hover:border-brand-red-500/50 hover:shadow-xl hover:shadow-brand-red-500/10 transition-all"
-            >
-              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                <BatteryCharging className="w-5 h-5" />
-              </div>
-              <h3 className="text-sm font-bold text-white group-hover:text-brand-red-300 transition">
-                Bataryalar
-              </h3>
-              <p className="text-[11px] text-slate-400 mt-1">Yüksek kapasiteli, orijinal korumalı piller</p>
-            </Link>
+          {/* Right Column: honest "how it works" spec panel */}
+          <div className="lg:col-span-5">
+            <div className="relative border border-yellow-500/25 bg-gradient-to-br from-[#211d15] to-ink rounded-md p-6">
+              <div className="absolute w-5 h-5 top-2.5 left-2.5 border-t-2 border-l-2 border-yellow-500" />
+              <div className="absolute w-5 h-5 top-2.5 right-2.5 border-t-2 border-r-2 border-yellow-500" />
+              <div className="absolute w-5 h-5 bottom-2.5 left-2.5 border-b-2 border-l-2 border-yellow-500" />
+              <div className="absolute w-5 h-5 bottom-2.5 right-2.5 border-b-2 border-r-2 border-yellow-500" />
 
-            <Link
-              href="/kategori/kasa"
-              className="group p-4 rounded-2xl bg-gradient-to-br from-brand-navy-900 to-brand-navy-800 border border-brand-navy-800 hover:border-brand-red-500/50 hover:shadow-xl hover:shadow-brand-red-500/10 transition-all"
-            >
-              <div className="w-10 h-10 rounded-xl bg-brand-navy-500/10 text-brand-navy-300 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                <Smartphone className="w-5 h-5" />
+              <div className="font-mono text-[11px] uppercase tracking-wider text-yellow-500 mb-4">◆ Nasıl Çalışır?</div>
+              <div className="flex flex-col gap-3">
+                {[
+                  ['Adım 1', 'Marka ve modelinizi seçin'],
+                  ['Adım 2', 'Uyumlu parçaları filtreleyin'],
+                  ['Adım 3', 'Sepete ekleyin, aynı gün kargoya verilsin'],
+                ].map(([step, desc]) => (
+                  <div key={step} className="flex items-start gap-3 font-mono text-[11px] border-b border-dashed border-yellow-500/15 pb-3">
+                    <CheckCircle2 className="w-4 h-4 text-yellow-500 shrink-0 mt-0.5" />
+                    <div>
+                      <div className="text-[#8a8272] uppercase">{step}</div>
+                      <div className="text-[#f3ede0] text-[12.5px] mt-0.5 font-sans normal-case">{desc}</div>
+                    </div>
+                  </div>
+                ))}
               </div>
-              <h3 className="text-sm font-bold text-white group-hover:text-brand-red-300 transition">
-                Kasa & Kapaklar
-              </h3>
-              <p className="text-[11px] text-slate-400 mt-1">Birebir oturan tam uyumlu arka gövde</p>
-            </Link>
 
-            <Link
-              href="/kategori/sarj-aleti"
-              className="group p-4 rounded-2xl bg-gradient-to-br from-brand-navy-900 to-brand-navy-800 border border-brand-navy-800 hover:border-brand-red-500/50 hover:shadow-xl hover:shadow-brand-red-500/10 transition-all"
-            >
-              <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                <Zap className="w-5 h-5" />
+              <div className="mt-4 pt-4 border-t border-yellow-500/15 flex items-start gap-3 font-mono text-[11px]">
+                <ShieldCheck className="w-4 h-4 text-yellow-500 shrink-0 mt-0.5" />
+                <div>
+                  <div className="text-[#8a8272] uppercase">Sertifikalı Bataryalar</div>
+                  <div className="text-[#f3ede0] text-[12.5px] mt-0.5 font-sans normal-case">IEC 62133 · UN 38.3 standartlarına uygun</div>
+                </div>
               </div>
-              <h3 className="text-sm font-bold text-white group-hover:text-brand-red-300 transition">
-                Şarj & Kablolar
-              </h3>
-              <p className="text-[11px] text-slate-400 mt-1">Hızlı şarj destekli adaptör ve kablolar</p>
-            </Link>
-
-            <Link
-              href="/kategori/tus-takimi"
-              className="group p-4 rounded-2xl bg-gradient-to-br from-brand-navy-900 to-brand-navy-800 border border-brand-navy-800 hover:border-brand-red-500/50 hover:shadow-xl hover:shadow-brand-red-500/10 transition-all"
-            >
-              <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                <Layers className="w-5 h-5" />
-              </div>
-              <h3 className="text-sm font-bold text-white group-hover:text-brand-red-300 transition">
-                Tuş Takımı & Flex
-              </h3>
-              <p className="text-[11px] text-slate-400 mt-1">Tüm klasik ve yeni tuşlu modeller</p>
-            </Link>
+            </div>
           </div>
         </div>
 
+        {/* Quick Category Cards */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 pb-12">
+          {quickCats.map((c) => (
+            <Link
+              key={c.href}
+              href={c.href}
+              className="group p-4 rounded-md bg-white/[0.02] border border-yellow-500/15 hover:border-yellow-500/50 transition-all"
+            >
+              <div className="w-10 h-10 rounded-md bg-yellow-500/10 text-yellow-500 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                <c.icon className="w-5 h-5" />
+              </div>
+              <h3 className="text-sm font-display font-bold uppercase text-white group-hover:text-yellow-500 transition">
+                {c.title}
+              </h3>
+              <p className="text-[11px] text-[#8a8272] mt-1">{c.desc}</p>
+            </Link>
+          ))}
+        </div>
+
         {/* Brand Bar */}
-        <div className="mt-12 pt-8 border-t border-brand-navy-900">
-          <span className="block text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-4 text-center">
+        <div className="pb-10 pt-2 border-t border-yellow-500/10">
+          <span className="block text-[11px] font-mono font-bold uppercase tracking-widest text-[#8a8272] mb-4 text-center pt-8">
             Popüler Marka & Model Grupları
           </span>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
@@ -197,7 +194,7 @@ export default function HeroBanner({ brands = [], categories = [] }: HeroBannerP
               <Link
                 key={b.name}
                 href={`/arama?q=${encodeURIComponent(b.name)}`}
-                className="py-2.5 px-3 rounded-xl bg-brand-navy-900 border border-brand-navy-800 hover:border-brand-navy-600 hover:bg-brand-navy-800 text-center text-xs font-semibold text-slate-300 hover:text-white transition flex items-center justify-center gap-1.5"
+                className="py-2.5 px-3 rounded-md bg-white/[0.02] border border-yellow-500/15 hover:border-yellow-500/40 text-center text-xs font-semibold text-[#b8b0a0] hover:text-yellow-500 transition flex items-center justify-center gap-1.5"
               >
                 <span>{b.name}</span>
                 <ArrowRight className="w-3 h-3 opacity-60" />
@@ -206,6 +203,7 @@ export default function HeroBanner({ brands = [], categories = [] }: HeroBannerP
           </div>
         </div>
       </div>
+      <div className="hazard-stripe" />
     </div>
   )
 }

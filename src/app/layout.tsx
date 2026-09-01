@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Inter, Big_Shoulders, IBM_Plex_Mono } from 'next/font/google'
 import './globals.css'
 import { CartProvider } from '@/context/CartContext'
 import Header from '@/components/Header'
@@ -9,7 +9,17 @@ import SmartAssistant from '@/components/SmartAssistant'
 import MobileBottomNav from '@/components/MobileBottomNav'
 import { getCategoryTree, getStoreSettings } from '@/lib/data'
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
+const bigShoulders = Big_Shoulders({
+  subsets: ['latin'],
+  weight: ['600', '700', '800'],
+  variable: '--font-big-shoulders',
+})
+const plexMono = IBM_Plex_Mono({
+  subsets: ['latin'],
+  weight: ['500', '600'],
+  variable: '--font-plex-mono',
+})
 
 export const metadata: Metadata = {
   title: 'Mobil Parça Merkezi - Telefon Yedek Parça, Batarya, Kasa ve Aksesuarlar',
@@ -32,8 +42,8 @@ export default async function RootLayout({
   ])
 
   return (
-    <html lang="tr">
-      <body className={`${inter.className} min-h-screen flex flex-col bg-slate-50 text-slate-900 selection:bg-brand-red-500 selection:text-white pb-16 md:pb-0`}>
+    <html lang="tr" className={`${inter.variable} ${bigShoulders.variable} ${plexMono.variable}`}>
+      <body className={`${inter.className} min-h-screen flex flex-col bg-paper text-ink selection:bg-yellow-500 selection:text-ink pb-16 md:pb-0`}>
         <CartProvider>
           <Header categories={categories} settings={settings} />
           <main className="flex-1">{children}</main>

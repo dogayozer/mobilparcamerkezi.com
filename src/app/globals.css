@@ -1,34 +1,31 @@
 @import "tailwindcss";
 
 /*
- * Marka renk paleti — mobilparcamerkezi.com logosundan (lacivert + kırmızı)
- * türetilmiştir. Mevcut --primary / --background gibi değişkenler
- * bozulmadan bırakıldı; bu token'lar ek olarak tanımlanıyor.
+ * mobilparcamerkezi.com marka sistemi v2 — "atölye / teknik parça" kimliği.
+ * Siyah + güvenlik sarısı (hazard yellow) ana palet; kağıt tonu zemin.
+ * Font değişkenleri layout.tsx'te next/font ile tanımlanıp buraya bağlanır.
  */
 @theme {
-  --color-brand-navy-50: #eff6fd;
-  --color-brand-navy-100: #dbebfb;
-  --color-brand-navy-200: #b2d4f6;
-  --color-brand-navy-300: #7bb5ef;
-  --color-brand-navy-400: #4094e8;
-  --color-brand-navy-500: #1975d2;
-  --color-brand-navy-600: #145ea9;
-  --color-brand-navy-700: #104a84;
-  --color-brand-navy-800: #0c3864;
-  --color-brand-navy-900: #092949;
-  --color-brand-navy-950: #051729;
+  --color-ink: #171410;
+  --color-ink-soft: #5c5548;
+  --color-ink-900: #0f0d0a;
 
-  --color-brand-red-50: #fdefef;
-  --color-brand-red-100: #fbdada;
-  --color-brand-red-200: #f7b0b0;
-  --color-brand-red-300: #f17979;
-  --color-brand-red-400: #eb3c3c;
-  --color-brand-red-500: #d51616;
-  --color-brand-red-600: #ab1111;
-  --color-brand-red-700: #860e0e;
-  --color-brand-red-800: #660a0a;
-  --color-brand-red-900: #4a0707;
-  --color-brand-red-950: #2a0404;
+  --color-paper: #f6f1e6;
+  --color-paper-2: #ece3d1;
+
+  --color-yellow-50: #fffaeb;
+  --color-yellow-100: #fff1c2;
+  --color-yellow-200: #ffe38a;
+  --color-yellow-300: #ffd155;
+  --color-yellow-400: #fac02a;
+  --color-yellow-500: #f5b400;
+  --color-yellow-600: #d99c00;
+  --color-yellow-700: #c98d00;
+  --color-yellow-800: #9c6e00;
+  --color-yellow-900: #6b4b00;
+
+  --font-display: var(--font-big-shoulders), "Arial Narrow", sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
 }
 
 @layer base {
@@ -44,11 +41,25 @@
   }
 
   body {
-    background-color: #f8fafc;
-    color: #0f172a;
+    background-color: #f6f1e6;
+    color: #171410;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     -webkit-font-smoothing: antialiased;
   }
+}
+
+/* Hazard stripe — bölüm ayraçları için diyagonal siyah/sarı bant */
+.hazard-stripe {
+  height: 7px;
+  background: repeating-linear-gradient(-45deg, #171410 0 10px, #f5b400 10px 20px);
+}
+
+/* İnce mavi/gri prizma yerine sarı tonda blueprint izgarası */
+.grid-tex {
+  background-image:
+    linear-gradient(rgba(245, 180, 0, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(245, 180, 0, 0.08) 1px, transparent 1px);
+  background-size: 28px 28px;
 }
 
 /* Glassmorphism Styles */
@@ -56,34 +67,34 @@
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(226, 232, 240, 0.8);
+  border: 1px solid rgba(23, 20, 16, 0.1);
 }
 
 .glass-card-dark {
-  background: rgba(9, 41, 73, 0.85);
+  background: rgba(15, 13, 10, 0.88);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(245, 180, 0, 0.14);
 }
 
 .glass-nav {
-  background: rgba(255, 255, 255, 0.92);
+  background: rgba(246, 241, 230, 0.92);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+  border-bottom: 1px solid rgba(23, 20, 16, 0.12);
 }
 
-/* Glow Effects — marka lacivert/kırmızı tonlarına uyarlandı */
+/* Glow Effects */
 .glow-primary {
-  box-shadow: 0 0 25px -5px rgba(12, 56, 100, 0.35);
+  box-shadow: 0 0 25px -5px rgba(23, 20, 16, 0.35);
 }
 
 .glow-blue-sm {
-  box-shadow: 0 0 15px -3px rgba(20, 94, 169, 0.35);
+  box-shadow: 0 0 15px -3px rgba(23, 20, 16, 0.25);
 }
 
 .glow-accent {
-  box-shadow: 0 0 25px -5px rgba(213, 22, 22, 0.35);
+  box-shadow: 0 0 25px -5px rgba(245, 180, 0, 0.4);
 }
 
 /* Modern Card Hover Transitions */
@@ -93,7 +104,7 @@
 
 .card-hover-effect:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 30px -10px rgba(9, 41, 73, 0.16);
+  box-shadow: 0 12px 30px -10px rgba(23, 20, 16, 0.18);
 }
 
 /* Custom Scrollbar */
@@ -103,16 +114,16 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: #ece3d1;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #c9bb9a;
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #a89a78;
 }
 
 /* Animations */

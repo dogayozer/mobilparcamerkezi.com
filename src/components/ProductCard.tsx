@@ -5,7 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useCart } from '@/context/CartContext'
 import { formatPrice } from '@/lib/utils'
-import { ShoppingBag, Check, Zap, Eye, ShieldCheck, Heart } from 'lucide-react'
+import { ShoppingBag, Check, Zap, ShieldCheck } from 'lucide-react'
 
 interface ProductCardProps {
   product: {
@@ -27,10 +27,9 @@ interface ProductCardProps {
 export default function ProductCard({ product }: ProductCardProps) {
   const { addToCart } = useCart()
   const [isAdded, setIsAdded] = useState(false)
-  const [isHovered, setIsHovered] = useState(false)
 
   const imageUrl =
-    product.images?.[0]?.url || 'https://placehold.co/400x400/0c3864/ffffff?text=MPM'
+    product.images?.[0]?.url || 'https://placehold.co/400x400/171410/f5b400?text=MPM'
 
   const discountPercent =
     product.reference_price && product.reference_price > product.sale_price
@@ -46,62 +45,58 @@ export default function ProductCard({ product }: ProductCardProps) {
   }
 
   const isOutOfStock = product.stock_qty <= 0 || product.status === 'out_of_stock'
+  const isLowStock = !isOutOfStock && product.stock_qty <= 10
 
   return (
-    <div
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      className="group relative bg-white rounded-2xl border border-slate-200/90 hover:border-brand-red-300 hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden"
-    >
+    <div className="group relative bg-white rounded-md border border-ink/15 hover:border-ink hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between overflow-hidden">
       {/* Badges Overlay */}
-      <div className="absolute top-3 left-3 z-10 flex flex-col gap-1.5 pointer-events-none">
+      <div className="absolute top-2.5 left-2.5 z-10 flex flex-col gap-1.5 pointer-events-none">
         {discountPercent > 0 && (
-          <span className="bg-brand-red-500 text-white text-[11px] font-black px-2 py-0.5 rounded-lg shadow-md tracking-wider">
-            %{discountPercent} İNDİRİM
+          <span className="bg-yellow-500 text-ink text-[10.5px] font-mono font-bold px-2 py-0.5 rounded-sm tracking-wide">
+            %{discountPercent}
           </span>
         )}
-        <span className="bg-brand-navy-900/90 text-white text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1 backdrop-blur-xs">
-          <Zap className="w-3 h-3 text-amber-400" />
-          Hızlı Kargo
-        </span>
+        {isLowStock && (
+          <span className="bg-ink text-yellow-500 text-[9.5px] font-mono font-bold px-2 py-0.5 rounded-sm tracking-wide">
+            SON {product.stock_qty} ADET
+          </span>
+        )}
       </div>
 
-      {/* Stock / Original Badge Right */}
-      <div className="absolute top-3 right-3 z-10 flex flex-col gap-1.5 items-end">
-        <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1">
+      {/* Trust badge */}
+      <div className="absolute top-2.5 right-2.5 z-10">
+        <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[9.5px] font-mono font-bold px-1.5 py-0.5 rounded-sm flex items-center gap-1">
           <ShieldCheck className="w-3 h-3" />
-          Garantili
+          Test Edildi
         </span>
       </div>
 
       {/* Product Image Area */}
-      <Link href={`/urun/${product.slug}`} className="block relative pt-[100%] bg-slate-50 overflow-hidden">
+      <Link href={`/urun/${product.slug}`} className="block relative pt-[100%] bg-paper-2 overflow-hidden border-b border-ink/10">
         <Image
           src={imageUrl}
           alt={product.title}
           fill
           sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 20vw"
-          className="object-contain p-4 group-hover:scale-108 transition-transform duration-500"
+          className="object-contain p-4 group-hover:scale-105 transition-transform duration-500"
         />
       </Link>
 
       {/* Product Info */}
-      <div className="p-4 flex-1 flex flex-col justify-between">
+      <div className="p-3.5 flex-1 flex flex-col justify-between">
         <div>
-          {/* Brand & Category */}
-          <div className="flex items-center justify-between text-[11px] text-slate-400 mb-1.5 font-medium">
-            <span className="text-brand-navy-700 font-bold uppercase tracking-wider">
-              {product.brand || 'Orijinal Uyumlu'}
-            </span>
+          {/* SKU + Category */}
+          <div className="flex items-center justify-between text-[10px] font-mono text-ink-soft mb-1.5">
+            <span className="truncate">{product.model_code || product.barcode}</span>
             {product.category && (
-              <span className="truncate max-w-[110px]">{product.category.name}</span>
+              <span className="truncate max-w-[100px] uppercase">{product.category.name}</span>
             )}
           </div>
 
           {/* Title */}
           <Link
             href={`/urun/${product.slug}`}
-            className="block text-xs sm:text-sm font-bold text-slate-800 hover:text-brand-red-600 line-clamp-2 transition leading-snug mb-2"
+            className="block text-xs sm:text-[13px] font-semibold text-ink hover:text-yellow-800 line-clamp-2 transition leading-snug mb-2"
             title={product.title}
           >
             {product.title}
@@ -109,13 +104,13 @@ export default function ProductCard({ product }: ProductCardProps) {
         </div>
 
         {/* Price & Action Section */}
-        <div className="pt-2 border-t border-slate-100 mt-2">
+        <div className="pt-2 border-t border-dashed border-ink/15 mt-2">
           <div className="flex items-baseline gap-2 mb-3">
-            <span className="text-base sm:text-lg font-black text-slate-900">
+            <span className="text-base sm:text-lg font-display font-extrabold text-ink">
               {formatPrice(product.sale_price)}
             </span>
             {product.reference_price && product.reference_price > product.sale_price && (
-              <span className="text-xs text-slate-400 line-through">
+              <span className="text-xs font-mono text-ink-soft line-through">
                 {formatPrice(product.reference_price)}
               </span>
             )}
@@ -125,12 +120,12 @@ export default function ProductCard({ product }: ProductCardProps) {
           <button
             onClick={handleAddToCart}
             disabled={isOutOfStock}
-            className={`w-full py-2.5 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 shadow-sm ${
+            className={`w-full py-2.5 px-3 rounded-md text-[11.5px] font-display font-bold uppercase transition flex items-center justify-center gap-2 ${
               isOutOfStock
-                ? 'bg-slate-100 text-slate-400 cursor-not-allowed'
+                ? 'bg-paper-2 text-ink-soft cursor-not-allowed'
                 : isAdded
-                ? 'bg-emerald-600 text-white shadow-emerald-500/20'
-                : 'bg-brand-red-500 hover:bg-brand-red-600 text-white shadow-brand-red-500/20 hover:shadow-md'
+                ? 'bg-emerald-600 text-white'
+                : 'bg-ink text-yellow-500 hover:bg-yellow-500 hover:text-ink'
             }`}
           >
             {isOutOfStock ? (
@@ -138,7 +133,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             ) : isAdded ? (
               <>
                 <Check className="w-4 h-4" />
-                <span>Sepete Eklendi</span>
+                <span>Eklendi</span>
               </>
             ) : (
               <>

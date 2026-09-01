@@ -13,62 +13,62 @@ export default function MobileBottomNav() {
   if (pathname.startsWith('/admin')) return null
 
   return (
-    <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-2 py-2 flex items-center justify-around shadow-lg">
+    <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-paper/95 backdrop-blur-md border-t-[3px] border-ink px-2 py-2 flex items-center justify-around shadow-lg">
       <Link
         href="/"
-        className={`flex flex-col items-center gap-1 p-1.5 rounded-xl transition ${
-          pathname === '/' ? 'text-brand-red-600 font-bold' : 'text-slate-500 hover:text-slate-900'
+        className={`flex flex-col items-center gap-1 p-1.5 rounded-md transition ${
+          pathname === '/' ? 'text-yellow-700 font-bold' : 'text-ink-soft hover:text-ink'
         }`}
       >
         <Home className="w-5 h-5" />
-        <span className="text-[10px]">Ana Sayfa</span>
+        <span className="text-[10px] font-mono">Ana Sayfa</span>
       </Link>
 
       <Link
         href="/kategori/batarya"
-        className={`flex flex-col items-center gap-1 p-1.5 rounded-xl transition ${
-          pathname.startsWith('/kategori') ? 'text-brand-red-600 font-bold' : 'text-slate-500 hover:text-slate-900'
+        className={`flex flex-col items-center gap-1 p-1.5 rounded-md transition ${
+          pathname.startsWith('/kategori') ? 'text-yellow-700 font-bold' : 'text-ink-soft hover:text-ink'
         }`}
       >
         <Grid className="w-5 h-5" />
-        <span className="text-[10px]">Kategori</span>
+        <span className="text-[10px] font-mono">Kategori</span>
       </Link>
 
       <Link
         href="/arama"
-        className={`flex flex-col items-center gap-1 p-1.5 rounded-xl transition ${
-          pathname.startsWith('/arama') ? 'text-brand-red-600 font-bold' : 'text-slate-500 hover:text-slate-900'
+        className={`flex flex-col items-center gap-1 p-1.5 rounded-md transition ${
+          pathname.startsWith('/arama') ? 'text-yellow-700 font-bold' : 'text-ink-soft hover:text-ink'
         }`}
       >
         <Search className="w-5 h-5" />
-        <span className="text-[10px]">Arama</span>
+        <span className="text-[10px] font-mono">Arama</span>
       </Link>
 
       <button
         onClick={() => setIsCartOpen(true)}
-        className="relative flex flex-col items-center gap-1 p-1.5 rounded-xl text-slate-500 hover:text-slate-900 transition"
+        className="relative flex flex-col items-center gap-1 p-1.5 rounded-md text-ink-soft hover:text-ink transition"
       >
         <div className="relative">
           <ShoppingBag className="w-5 h-5" />
           {totalItems > 0 && (
-            <span className="absolute -top-1.5 -right-2 bg-brand-red-500 text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center">
+            <span className="absolute -top-1.5 -right-2 bg-yellow-500 text-ink text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center">
               {totalItems}
             </span>
           )}
         </div>
-        <span className="text-[10px]">Sepetim</span>
+        <span className="text-[10px] font-mono">Sepetim</span>
       </button>
 
       <Link
         href="/hesabim"
-        className={`flex flex-col items-center gap-1 p-1.5 rounded-xl transition ${
+        className={`flex flex-col items-center gap-1 p-1.5 rounded-md transition ${
           pathname.startsWith('/hesabim') || pathname.startsWith('/giris')
-            ? 'text-brand-red-600 font-bold'
-            : 'text-slate-500 hover:text-slate-900'
+            ? 'text-yellow-700 font-bold'
+            : 'text-ink-soft hover:text-ink'
         }`}
       >
         <User className="w-5 h-5" />
-        <span className="text-[10px]">Hesabım</span>
+        <span className="text-[10px] font-mono">Hesabım</span>
       </Link>
     </div>
   )

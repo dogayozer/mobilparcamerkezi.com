@@ -56,7 +56,10 @@ export async function POST(req: Request) {
     if (apiKey) {
       try {
         const genAI = new GoogleGenerativeAI(apiKey)
-        const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
+        const model = genAI.getGenerativeModel({
+          model: 'gemini-3.6-flash',
+          generationConfig: { maxOutputTokens: 350 }, // token maliyetini sınırla
+        })
 
         const productContext = matchingProducts
           .map((p) => `- ${p.title} (${p.sale_price} TL, Stok: ${p.stock_qty})`)

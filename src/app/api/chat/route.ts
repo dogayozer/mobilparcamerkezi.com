@@ -55,8 +55,21 @@ Görevlerin:
           }),
           // @ts-ignore
           execute: async (args: any) => {
-            const keywords: string[] = args.keywords || []
-            if (!keywords || keywords.length === 0) {
+            // Model bazen şemayı görmezden gelip farklı bir anahtar adıyla (örn. "query")
+            // ya da dizi yerine tek bir metinle çağırabiliyor — her ihtimale karşı normalize et.
+            const raw = args.keywords ?? args.query ?? args.query_keywords ?? args.keyword ?? null
+            let keywords: string[] = []
+            if (Array.isArray(raw)) {
+              keywords = raw.filter((k: any) => typeof k === 'string' && k.trim())
+            } else if (typeof raw === 'string' && raw.trim()) {
+              keywords = raw.trim().split(/\s+/).filter(Boolean)
+            } else if (raw == null && Object.keys(args).length > 0) {
+              const val = Object.values(args)[0]
+              if (Array.isArray(val)) keywords = (val as any[]).filter((k) => typeof k === 'string')
+              else if (typeof val === 'string') keywords = val.trim().split(/\s+/).filter(Boolean)
+            }
+
+            if (keywords.length === 0) {
               return { success: false, message: 'Anahtar kelime bulunamadı.' }
             }
 

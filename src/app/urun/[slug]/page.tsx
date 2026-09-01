@@ -5,13 +5,54 @@ import { prisma } from '@/lib/prisma'
 import ProductDetailClient from './ProductDetailClient'
 import ProductCard from '@/components/ProductCard'
 import { ChevronRight } from 'lucide-react'
-import { withMpmPrice } from '@/lib/utils'
+import { withMpmPrice, mpmizeText } from '@/lib/utils'
+import type { Metadata } from 'next'
 
 interface Props {
   params: Promise<{ slug: string }>
 }
 
 export const revalidate = 60
+
+// Google arama sonuçlarında <title> ~60, meta description ~155 karakterden
+// sonra kesiliyor. Ürüne özel içerik (marka/model/parça adı) genel site
+// başlığından daha değerli anahtar kelime taşıdığı için önceliklendiriliyor.
+const MAX_TITLE = 60
+const MAX_DESC = 155
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.mobilparcamerkezi.com'
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params
+  const product = await prisma.product.findUnique({ where: { slug } })
+
+  if (!product) {
+    return { title: 'Ürün Bulunamadı | Mobil Parça Merkezi' }
+  }
+
+  const shortSuffix = ' | MPM'
+  const pageTitle =
+    product.title.length + shortSuffix.length <= MAX_TITLE
+      ? `${product.title}${shortSuffix}`
+      : product.title.length <= MAX_TITLE
+        ? product.title
+        : product.title.slice(0, MAX_TITLE - 1).trim() + '…'
+
+  const defaultDescription = `${product.title} en uygun fiyata Mobil Parça Merkezi'nde. Aynı gün kargo, garantili ve test edilmiş yedek parça.`
+  const rawDesc = mpmizeText(product.description_raw || defaultDescription).replace(/;/g, ' ').replace(/\s+/g, ' ').trim()
+  const pageDescription = rawDesc.length > MAX_DESC ? rawDesc.slice(0, MAX_DESC - 1).trim() + '…' : rawDesc
+
+  return {
+    title: pageTitle,
+    description: pageDescription,
+    alternates: {
+      canonical: `${SITE_URL}/urun/${product.slug}`,
+    },
+    openGraph: {
+      title: pageTitle,
+      description: pageDescription,
+    },
+  }
+}
 
 export default async function ProductDetailPage({ params }: Props) {
   const { slug } = await params
@@ -47,7 +88,10 @@ export default async function ProductDetailPage({ params }: Props) {
 
   if (!activeProduct) return notFound()
 
-  const productWithMpmPrice = withMpmPrice(activeProduct)
+  const productWithMpmPrice = {
+    ...withMpmPrice(activeProduct),
+    description_raw: mpmizeText(activeProduct.description_raw),
+  }
 
   // Related products in the same category
   const relatedProducts = (

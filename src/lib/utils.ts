@@ -30,6 +30,15 @@ export function withMpmPrice<T extends MpmPriceableProduct>(
   return { ...product, sale_price, reference_price }
 }
 
+// Ürün açıklamaları (description_raw) Fodos ile ortak veritabanından geliyor ve
+// büyük çoğunluğu ("%95+") "Fodos güvencesiyle/kalitesiyle" gibi Fodos marka adını
+// içeriyor. Bu, sadece GÖSTERİM anında MPM'e çeviriyor — paylaşılan veriye
+// dokunulmuyor, Fodos'un kendi sitesindeki metin aynen kalıyor.
+export function mpmizeText<T extends string | null | undefined>(text: T): T {
+  if (!text) return text
+  return text.replace(/\bFodos\b/g, 'Mobil Parça Merkezi') as T
+}
+
 export function slugify(text: string): string {
   return text
     .toString()

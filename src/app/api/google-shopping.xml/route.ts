@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { withMpmPrice } from '@/lib/utils'
+import { withMpmPrice, mpmizeText } from '@/lib/utils'
 
 export const dynamic = 'force-dynamic'
 
@@ -36,7 +36,7 @@ export async function GET() {
       xml += `  <item>
     <g:id>${p.barcode}</g:id>
     <g:title><![CDATA[${p.title}]]></g:title>
-    <g:description><![CDATA[${p.description_raw || p.title}]]></g:description>
+    <g:description><![CDATA[${mpmizeText(p.description_raw) || p.title}]]></g:description>
     <g:link>${baseUrl}/urun/${p.slug}</g:link>
     <g:image_link>${imgUrl}</g:image_link>
     <g:brand><![CDATA[${p.brand || 'Mobil Parça Merkezi'}]]></g:brand>

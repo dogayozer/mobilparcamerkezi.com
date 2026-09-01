@@ -7,8 +7,8 @@ export default function SettingsForm({ settings }: { settings: any }) {
   const [formData, setFormData] = useState({
     companyName: settings?.companyName || 'Mobil Parça Merkezi',
     address: settings?.address || 'İstanbul, Türkiye',
-    phone: settings?.phone || '0850 000 00 00',
-    whatsappPhone: settings?.whatsappPhone || '905000000000',
+    phone: settings?.phone || '0544 577 42 57',
+    whatsappPhone: settings?.whatsappPhone || '905445774257',
     shippingThreshold: settings?.shippingThreshold || 500,
     shippingFee: settings?.shippingFee || 90,
     sameDayShippingTime: settings?.sameDayShippingTime || '16:30',

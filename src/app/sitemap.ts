@@ -14,7 +14,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         select: { slug: true, updatedAt: true },
         take: 5000,
       }),
+      // Sadece en az bir aktif ürünü olan kategoriler (boş/çöp kategorileri sitemap'e
+      // sokup ince/boş içerik sinyali vermemek için)
       prisma.category.findMany({
+        where: { products: { some: { status: { not: 'inactive' } } } },
         select: { slug: true, updatedAt: true },
       }),
     ])
@@ -44,7 +47,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/mesafeli-satis-sozlesmesi',
     '/kvkk',
     '/kargo-takibi',
-    '/sepet',
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),

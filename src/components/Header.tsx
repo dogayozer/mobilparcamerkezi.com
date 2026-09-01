@@ -166,7 +166,7 @@ export default function Header({ categories = [], settings }: HeaderProps) {
             </Link>
             <span className="text-[#413c32]">|</span>
             <a
-              href={`https://wa.me/${settings?.whatsappPhone || '905000000000'}`}
+              href={`https://wa.me/${settings?.whatsappPhone || '905445774257'}`}
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-yellow-500 transition flex items-center gap-1 font-semibold"

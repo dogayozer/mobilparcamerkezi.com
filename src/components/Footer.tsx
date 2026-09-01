@@ -89,7 +89,7 @@ export default function Footer({ settings }: { settings?: any }) {
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-emerald-400" />
-                <span>{settings?.phone || '0532 232 44 99'}</span>
+                <span>{settings?.phone || '0544 577 42 57'}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-yellow-500" />

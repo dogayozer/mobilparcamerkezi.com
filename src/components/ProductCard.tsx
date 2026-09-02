@@ -87,7 +87,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         <div>
           {/* SKU + Category */}
           <div className="flex items-center justify-between text-[10px] font-mono text-ink-soft mb-1.5">
-            <span className="truncate">{product.model_code || product.barcode}</span>
+            <span className="truncate">{product.brand || product.model_code || product.barcode}</span>
             {product.category && (
               <span className="truncate max-w-[100px] uppercase">{product.category.name}</span>
             )}

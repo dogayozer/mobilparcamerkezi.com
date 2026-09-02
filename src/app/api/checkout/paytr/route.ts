@@ -11,7 +11,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Geçersiz sipariş verisi' }, { status: 400 })
     }
 
-    const orderNumber = 'MPM-' + Date.now().toString().slice(-8)
+    // PayTR merchant_oid alfanumerik olmak zorunda, tire/özel karakter kabul etmiyor
+    // (canlı testte "merchant_oid alfanumerik olmalidir" hatasıyla doğrulandı).
+    const orderNumber = 'MPM' + Date.now().toString().slice(-9)
 
     // Check customer
     let dbCustomer = await prisma.customer.findUnique({

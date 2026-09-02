@@ -39,7 +39,7 @@ export default async function RootLayout({
   const [categories, settings, topBrands] = await Promise.all([
     getCategoryTree(),
     getStoreSettings(),
-    getTopBrands(5),
+    getTopBrands(7),
   ])
 
   return (

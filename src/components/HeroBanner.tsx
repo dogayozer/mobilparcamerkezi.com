@@ -51,9 +51,9 @@ export default function HeroBanner({ brands = [], categories = [] }: HeroBannerP
 
   const quickCats = [
     { href: '/kategori/batarya', icon: BatteryCharging, title: 'Bataryalar', desc: 'Yüksek kapasiteli, orijinal korumalı piller' },
-    { href: '/kategori/kasa', icon: Smartphone, title: 'Kasa & Kapaklar', desc: 'Birebir oturan tam uyumlu arka gövde' },
+    { href: '/kategori/telefon-kasasi', icon: Smartphone, title: 'Kasa & Kapaklar', desc: 'Birebir oturan tam uyumlu arka gövde' },
     { href: '/kategori/sarj-aleti', icon: Zap, title: 'Şarj & Kablolar', desc: 'Hızlı şarj destekli adaptör ve kablolar' },
-    { href: '/kategori/tus-takimi', icon: Layers, title: 'Tuş Takımı & Flex', desc: 'Tüm klasik ve yeni tuşlu modeller' },
+    { href: '/kategori/tus-takimlari', icon: Layers, title: 'Tuş Takımı & Flex', desc: 'Tüm klasik ve yeni tuşlu modeller' },
   ]
 
   return (

@@ -105,11 +105,11 @@ export default function Footer({ settings }: { settings?: any }) {
             </h4>
             <ul className="space-y-2.5 text-xs">
               <li><Link href="/kategori/batarya" className="hover:text-white transition">Telefon Bataryaları</Link></li>
-              <li><Link href="/kategori/kasa" className="hover:text-white transition">Kasa & Arka Kapaklar</Link></li>
+              <li><Link href="/kategori/telefon-kasasi" className="hover:text-white transition">Kasa & Arka Kapaklar</Link></li>
               <li><Link href="/kategori/sarj-aleti" className="hover:text-white transition">Şarj Aletleri & Adaptörler</Link></li>
               <li><Link href="/kategori/sarj-kablosu" className="hover:text-white transition">Hızlı Şarj Kabloları</Link></li>
-              <li><Link href="/kategori/tus-takimi" className="hover:text-white transition">Tuş Takımı & Flex Kablolar</Link></li>
-              <li><Link href="/kategori/koruyucu" className="hover:text-white transition">Ekran Koruyucu Camlar</Link></li>
+              <li><Link href="/kategori/tus-takimlari" className="hover:text-white transition">Tuş Takımı & Flex Kablolar</Link></li>
+              <li><Link href="/kategori/ekranlar-ve-koruyucular" className="hover:text-white transition">Ekran Koruyucu Camlar</Link></li>
             </ul>
           </div>
 

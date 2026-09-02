@@ -149,7 +149,7 @@ export default async function HomePage() {
               </h2>
             </div>
             <Link
-              href="/kategori/kasa"
+              href="/kategori/telefon-kasasi"
               className="inline-flex items-center gap-1.5 text-[11px] font-mono font-bold text-ink hover:text-emerald-700 border border-ink/20 px-4 py-2 rounded-md transition"
             >
               <span>TÜM YENİ ÜRÜNLER</span>

@@ -319,16 +319,16 @@ export default function Header({ categories = [], settings }: HeaderProps) {
               <Link href="/kategori/batarya" className="px-3.5 py-3 hover:text-yellow-800 transition border-r border-ink/10">
                 BATARYALAR
               </Link>
-              <Link href="/kategori/kasa" className="px-3.5 py-3 hover:text-yellow-800 transition border-r border-ink/10">
+              <Link href="/kategori/telefon-kasasi" className="px-3.5 py-3 hover:text-yellow-800 transition border-r border-ink/10">
                 KASA &amp; KAPAK
               </Link>
               <Link href="/kategori/sarj-aleti" className="px-3.5 py-3 hover:text-yellow-800 transition border-r border-ink/10">
                 ŞARJ &amp; KABLO
               </Link>
-              <Link href="/kategori/tus-takimi" className="px-3.5 py-3 hover:text-yellow-800 transition border-r border-ink/10">
+              <Link href="/kategori/tus-takimlari" className="px-3.5 py-3 hover:text-yellow-800 transition border-r border-ink/10">
                 TUŞ TAKIMLARI
               </Link>
-              <Link href="/kategori/koruyucu" className="px-3.5 py-3 hover:text-yellow-800 transition">
+              <Link href="/kategori/ekranlar-ve-koruyucular" className="px-3.5 py-3 hover:text-yellow-800 transition">
                 EKRAN KORUYUCULAR
               </Link>
             </nav>

@@ -10,9 +10,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     const [products, categories] = await Promise.all([
       prisma.product.findMany({
-        where: { status: { not: 'inactive' } },
+        where: { status: 'active' },
         select: { slug: true, updatedAt: true },
-        take: 5000,
+        take: 50000, // sitemap limit — fodos-ecommerce ile aynı üst sınır, pratikte katalog boyutunun (14bin) çok üzerinde
       }),
       // Sadece en az bir aktif ürünü olan kategoriler (boş/çöp kategorileri sitemap'e
       // sokup ince/boş içerik sinyali vermemek için)

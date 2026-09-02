@@ -1,7 +1,13 @@
 import React from 'react'
 import { FileText } from 'lucide-react'
+import { getStoreSettings } from '@/lib/data'
 
-export default function DistanceSellingPage() {
+export const revalidate = 60
+
+export default async function DistanceSellingPage() {
+  const settings = await getStoreSettings()
+  const htmlContent = settings?.mesafeliSatisHtml
+
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 space-y-8">
       <div className="text-center space-y-3">
@@ -15,21 +21,28 @@ export default function DistanceSellingPage() {
       </div>
 
       <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm space-y-6 text-xs sm:text-sm text-slate-600 leading-relaxed">
-        <h3 className="text-base font-black text-slate-900">Madde 1: Taraflar</h3>
-        <p>
-          <strong>SATICI:</strong> Mobil Parça Merkezi<br />
-          <strong>ALICI:</strong> www.mobilparcamerkezi.com internet sitesinden sipariş veren gerçek/tüzel kişi.
-        </p>
-
-        <h3 className="text-base font-black text-slate-900">Madde 2: Sözleşmenin Konusu</h3>
-        <p>
-          İşbu sözleşmenin konusu, ALICI'nın SATICI'ya ait internet sitesinden elektronik ortamda siparişini yaptığı, sitede belirtilen niteliklere sahip ürünün satışı ve teslimi ile ilgili olarak 6502 sayılı Tüketicinin Korunması Hakkında Kanun ve Mesafeli Sözleşmeler Yönetmeliği hükümleri gereğince tarafların hak ve yükümlülüklerinin saptanmasıdır.
-        </p>
-
-        <h3 className="text-base font-black text-slate-900">Madde 3: Teslimat ve İade</h3>
-        <p>
-          Ürün, ALICI'nın belirttiği teslimat adresine anlaşmalı kargo firması aracılığı ile taahhüt edilen süre içerisinde teslim edilir. ALICI, ürünü teslim aldığı andan itibaren 14 gün içinde cayma hakkına sahiptir.
-        </p>
+        {htmlContent ? (
+          <div
+            className="prose prose-slate prose-sm max-w-none [&_p]:mb-4"
+            dangerouslySetInnerHTML={{ __html: htmlContent.replace(/\n/g, '<br/>') }}
+          />
+        ) : (
+          <>
+            <h3 className="text-base font-black text-slate-900">Madde 1: Taraflar</h3>
+            <p>
+              <strong>SATICI:</strong> Mobil Parça Merkezi<br />
+              <strong>ALICI:</strong> www.mobilparcamerkezi.com internet sitesinden sipariş veren gerçek/tüzel kişi.
+            </p>
+            <h3 className="text-base font-black text-slate-900">Madde 2: Sözleşmenin Konusu</h3>
+            <p>
+              İşbu sözleşmenin konusu, ALICI'nın SATICI'ya ait internet sitesinden elektronik ortamda siparişini yaptığı, sitede belirtilen niteliklere sahip ürünün satışı ve teslimi ile ilgili olarak 6502 sayılı Tüketicinin Korunması Hakkında Kanun ve Mesafeli Sözleşmeler Yönetmeliği hükümleri gereğince tarafların hak ve yükümlülüklerinin saptanmasıdır.
+            </p>
+            <h3 className="text-base font-black text-slate-900">Madde 3: Teslimat ve İade</h3>
+            <p>
+              Ürün, ALICI'nın belirttiği teslimat adresine anlaşmalı kargo firması aracılığı ile taahhüt edilen süre içerisinde teslim edilir. ALICI, ürünü teslim aldığı andan itibaren 14 gün içinde cayma hakkına sahiptir.
+            </p>
+          </>
+        )}
       </div>
     </div>
   )

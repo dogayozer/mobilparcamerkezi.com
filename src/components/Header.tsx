@@ -314,23 +314,20 @@ export default function Header({ categories = [], settings }: HeaderProps) {
               </div>
             </div>
 
-            {/* Quick Links */}
+            {/* Quick Links — gerçek kategori listesinden (en çok ürünlü 5 tanesi), hardcoded değil */}
             <nav className="flex items-center pl-3 text-[11px] font-mono font-semibold text-ink-soft">
-              <Link href="/kategori/batarya" className="px-3.5 py-3 hover:text-yellow-800 transition border-r border-ink/10">
-                BATARYALAR
-              </Link>
-              <Link href="/kategori/telefon-kasasi" className="px-3.5 py-3 hover:text-yellow-800 transition border-r border-ink/10">
-                KASA &amp; KAPAK
-              </Link>
-              <Link href="/kategori/sarj-aleti" className="px-3.5 py-3 hover:text-yellow-800 transition border-r border-ink/10">
-                ŞARJ &amp; KABLO
-              </Link>
-              <Link href="/kategori/tus-takimlari" className="px-3.5 py-3 hover:text-yellow-800 transition border-r border-ink/10">
-                TUŞ TAKIMLARI
-              </Link>
-              <Link href="/kategori/ekranlar-ve-koruyucular" className="px-3.5 py-3 hover:text-yellow-800 transition">
-                EKRAN KORUYUCULAR
-              </Link>
+              {[...categories]
+                .sort((a, b) => (b._count?.products || 0) - (a._count?.products || 0))
+                .slice(0, 5)
+                .map((cat, i, arr) => (
+                  <Link
+                    key={cat.id}
+                    href={`/kategori/${cat.slug}`}
+                    className={`px-3.5 py-3 hover:text-yellow-800 transition ${i < arr.length - 1 ? 'border-r border-ink/10' : ''}`}
+                  >
+                    {cat.name.toLocaleUpperCase('tr-TR')}
+                  </Link>
+                ))}
             </nav>
           </div>
 

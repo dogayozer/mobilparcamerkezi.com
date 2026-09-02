@@ -1,7 +1,13 @@
 import React from 'react'
 import { Shield } from 'lucide-react'
+import { getStoreSettings } from '@/lib/data'
 
-export default function KvkkPage() {
+export const revalidate = 60
+
+export default async function KvkkPage() {
+  const settings = await getStoreSettings()
+  const htmlContent = settings?.kisiselVerilerHtml
+
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 space-y-8">
       <div className="text-center space-y-3">
@@ -15,15 +21,23 @@ export default function KvkkPage() {
       </div>
 
       <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm space-y-6 text-xs sm:text-sm text-slate-600 leading-relaxed">
-        <h3 className="text-base font-black text-slate-900">1. Veri Sorumlusu</h3>
-        <p>
-          Mobil Parça Merkezi olarak, 6698 sayılı Kişisel Verilerin Korunması Kanunu (“KVKK”) uyarınca kişisel verilerinizi mevzuata uygun olarak işlemekte ve korumaktayız.
-        </p>
-
-        <h3 className="text-base font-black text-slate-900">2. Kişisel Verilerin İşlenme Amacı</h3>
-        <p>
-          Toplanan kişisel verileriniz (ad, soyad, telefon, adres, e-posta), siparişlerinizin işlenmesi, faturalandırılması, kargo şirketlerine teslimi ve müşteri hizmetleri desteği sağlanması amaçlarıyla işlenmektedir.
-        </p>
+        {htmlContent ? (
+          <div
+            className="prose prose-slate prose-sm max-w-none [&_p]:mb-4"
+            dangerouslySetInnerHTML={{ __html: htmlContent.replace(/\n/g, '<br/>') }}
+          />
+        ) : (
+          <>
+            <h3 className="text-base font-black text-slate-900">1. Veri Sorumlusu</h3>
+            <p>
+              Mobil Parça Merkezi olarak, 6698 sayılı Kişisel Verilerin Korunması Kanunu (“KVKK”) uyarınca kişisel verilerinizi mevzuata uygun olarak işlemekte ve korumaktayız.
+            </p>
+            <h3 className="text-base font-black text-slate-900">2. Kişisel Verilerin İşlenme Amacı</h3>
+            <p>
+              Toplanan kişisel verileriniz (ad, soyad, telefon, adres, e-posta), siparişlerinizin işlenmesi, faturalandırılması, kargo şirketlerine teslimi ve müşteri hizmetleri desteği sağlanması amaçlarıyla işlenmektedir.
+            </p>
+          </>
+        )}
       </div>
     </div>
   )

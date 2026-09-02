@@ -24,6 +24,7 @@ import {
 interface HeaderProps {
   categories?: Array<{ id: string; name: string; slug: string; _count?: { products: number } }>
   settings?: any
+  topBrands?: Array<{ name: string; count: number }>
 }
 
 /* Marka rozeti — siyah kart üzerinde sarı "M" işareti (mobilparcamerkezi.com) */
@@ -103,7 +104,7 @@ function useShippingCountdown(cutoff: string = '16:30') {
   return { label, isOpen }
 }
 
-export default function Header({ categories = [], settings }: HeaderProps) {
+export default function Header({ categories = [], settings, topBrands = [] }: HeaderProps) {
   const router = useRouter()
   const { totalItems, setIsCartOpen } = useCart()
   const [searchQuery, setSearchQuery] = useState('')
@@ -314,20 +315,19 @@ export default function Header({ categories = [], settings }: HeaderProps) {
               </div>
             </div>
 
-            {/* Quick Links — gerçek kategori listesinden (en çok ürünlü 5 tanesi), hardcoded değil */}
+            {/* Quick Links — gerçek ürün sayısına göre en popüler 5 marka, hardcoded değil.
+                Bu site "cihazınıza uyumlu parça" mantığıyla çalıştığı için marka, kategoriden
+                daha doğal bir birincil filtre — kategoriler zaten TÜM KATEGORİLER menüsünden erişilebilir. */}
             <nav className="flex items-center pl-3 text-[11px] font-mono font-semibold text-ink-soft">
-              {[...categories]
-                .sort((a, b) => (b._count?.products || 0) - (a._count?.products || 0))
-                .slice(0, 5)
-                .map((cat, i, arr) => (
-                  <Link
-                    key={cat.id}
-                    href={`/kategori/${cat.slug}`}
-                    className={`px-3.5 py-3 hover:text-yellow-800 transition ${i < arr.length - 1 ? 'border-r border-ink/10' : ''}`}
-                  >
-                    {cat.name.toLocaleUpperCase('tr-TR')}
-                  </Link>
-                ))}
+              {topBrands.map((brand, i, arr) => (
+                <Link
+                  key={brand.name}
+                  href={`/arama?q=${encodeURIComponent(brand.name)}`}
+                  className={`px-3.5 py-3 hover:text-yellow-800 transition ${i < arr.length - 1 ? 'border-r border-ink/10' : ''}`}
+                >
+                  {brand.name.toLocaleUpperCase('tr-TR')}
+                </Link>
+              ))}
             </nav>
           </div>
 

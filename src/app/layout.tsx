@@ -7,7 +7,7 @@ import Footer from '@/components/Footer'
 import CartDrawer from '@/components/CartDrawer'
 import SmartAssistant from '@/components/SmartAssistant'
 import MobileBottomNav from '@/components/MobileBottomNav'
-import { getCategoryTree, getStoreSettings } from '@/lib/data'
+import { getCategoryTree, getStoreSettings, getTopBrands } from '@/lib/data'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const bigShoulders = Big_Shoulders({
@@ -36,16 +36,17 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const [categories, settings] = await Promise.all([
+  const [categories, settings, topBrands] = await Promise.all([
     getCategoryTree(),
     getStoreSettings(),
+    getTopBrands(5),
   ])
 
   return (
     <html lang="tr" className={`${inter.variable} ${bigShoulders.variable} ${plexMono.variable}`}>
       <body className={`${inter.className} min-h-screen flex flex-col bg-paper text-ink selection:bg-yellow-500 selection:text-ink pb-16 md:pb-0`}>
         <CartProvider>
-          <Header categories={categories} settings={settings} />
+          <Header categories={categories} settings={settings} topBrands={topBrands} />
           <main className="flex-1">{children}</main>
           <Footer settings={settings} />
           <CartDrawer />

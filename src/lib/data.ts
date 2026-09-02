@@ -72,6 +72,29 @@ export const getCategoryTree = unstable_cache(
   { revalidate: 300, tags: ['categories'] }
 )
 
+/* Header'daki hızlı erişim şeridi için gerçek ürün sayısına göre en popüler markalar */
+export const getTopBrands = unstable_cache(
+  async (limit: number = 8) => {
+    try {
+      const brands = await prisma.product.groupBy({
+        by: ['brand'],
+        where: { status: { not: 'inactive' }, brand: { not: null } },
+        _count: { id: true },
+        orderBy: { _count: { id: 'desc' } },
+        take: limit,
+      })
+      return brands
+        .filter((b) => b.brand)
+        .map((b) => ({ name: b.brand as string, count: b._count.id }))
+    } catch (e) {
+      console.error('Error fetching top brands:', e)
+      return []
+    }
+  },
+  ['top-brands'],
+  { revalidate: 600, tags: ['products'] }
+)
+
 export const getFeaturedBrands = unstable_cache(
   async () => {
     try {

@@ -33,7 +33,7 @@ export async function POST(req: Request) {
         original_excel_price: true,
         stock_qty: true,
       },
-      orderBy: { stock_qty: 'desc' },
+      orderBy: [{ has_real_photo: 'desc' }, { stock_qty: 'desc' }],
       take: 8,
     })
 

@@ -105,6 +105,7 @@ export default async function ProductDetailPage({ params }: Props) {
         images: { orderBy: { order: 'asc' }, take: 1 },
         category: { select: { name: true, slug: true } },
       },
+      orderBy: [{ has_real_photo: 'desc' }, { stock_qty: 'desc' }],
       take: 4,
     })
   ).map(withMpmPrice)

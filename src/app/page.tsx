@@ -42,7 +42,7 @@ export default async function HomePage() {
           images: { orderBy: { order: 'asc' }, take: 1 },
           category: { select: { name: true, slug: true } },
         },
-        orderBy: { stock_qty: 'desc' },
+        orderBy: [{ has_real_photo: 'desc' }, { stock_qty: 'desc' }],
         take: 8,
       })
     ).map(withMpmPrice)
@@ -54,7 +54,7 @@ export default async function HomePage() {
           images: { orderBy: { order: 'asc' }, take: 1 },
           category: { select: { name: true, slug: true } },
         },
-        orderBy: { createdAt: 'desc' },
+        orderBy: [{ has_real_photo: 'desc' }, { createdAt: 'desc' }],
         take: 8,
       })
     ).map(withMpmPrice)

@@ -74,7 +74,9 @@ export default async function CategoryPage({ params, searchParams }: Props) {
   const sort = typeof sParams.sort === 'string' ? sParams.sort : 'newest'
 
   // MPM'in kendi fiyatına göre sırala (mpm_sale_price henüz hesaplanmamış ürünler sona düşer)
-  let orderBy: any = { createdAt: 'desc' }
+  // Varsayılan sıralamada gerçek fotoğrafı olan ürünler üstte çıksın (Trendyol import placeholder'ı olanlar geride kalsın);
+  // kullanıcı fiyat/stok gibi bir sıralama seçtiğinde o seçime karışmıyoruz.
+  let orderBy: any = [{ has_real_photo: 'desc' }, { createdAt: 'desc' }]
   if (sort === 'price_asc') orderBy = { mpm_sale_price: { sort: 'asc', nulls: 'last' } }
   if (sort === 'price_desc') orderBy = { mpm_sale_price: { sort: 'desc', nulls: 'last' } }
   if (sort === 'stock') orderBy = { stock_qty: 'desc' }

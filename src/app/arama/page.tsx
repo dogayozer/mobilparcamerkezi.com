@@ -41,7 +41,7 @@ export default async function SearchPage({ searchParams }: Props) {
           images: { orderBy: { order: 'asc' }, take: 1 },
           category: { select: { name: true, slug: true } },
         },
-        orderBy: { stock_qty: 'desc' },
+        orderBy: [{ has_real_photo: 'desc' }, { stock_qty: 'desc' }],
         take: 60,
       })
     ).map(withMpmPrice)

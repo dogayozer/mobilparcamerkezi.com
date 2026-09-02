@@ -94,6 +94,7 @@ Görevlerin:
                 original_excel_price: true,
                 stock_qty: true,
               },
+              orderBy: [{ has_real_photo: 'desc' }, { stock_qty: 'desc' }],
               take: 5,
             })
 

@@ -93,7 +93,7 @@ function useShippingCountdown(cutoff: string = '16:30') {
         setLabel(`${rh > 0 ? rh + ' sa ' : ''}${rm} dk ${rs.toString().padStart(2, '0')} sn`)
       } else {
         setIsOpen(false)
-        setLabel('Sonraki iş günü kargoya verilir')
+        setLabel('Aynı gün kargoya verilir')
       }
     }
     tick()

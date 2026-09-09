@@ -1,7 +1,7 @@
 import React from 'react'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { prisma } from '@/lib/prisma'
+import { getCachedCategoryData } from '@/lib/data'
 import ProductCard from '@/components/ProductCard'
 import { withMpmPrice } from '@/lib/utils'
 import { ChevronRight, Filter, SlidersHorizontal, Smartphone } from 'lucide-react'
@@ -20,12 +20,13 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.mobilparcamerk
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
-  const category = await prisma.category.findUnique({ where: { slug }, select: { name: true } })
+  const data = await getCachedCategoryData(slug)
 
-  if (!category) {
+  if (!data) {
     return { title: 'Kategori Bulunamadı | Mobil Parça Merkezi' }
   }
 
+  const { category } = data
   const pageTitle = `${category.name} | MPM`.length <= MAX_TITLE ? `${category.name} | MPM` : category.name.slice(0, MAX_TITLE - 1).trim() + '…'
   const desc = `${category.name} çeşitleri uygun fiyatlarla Mobil Parça Merkezi'nde. Garantili, test edilmiş yedek parçalar ve aynı gün kargo.`
   const pageDescription = desc.length > MAX_DESC ? desc.slice(0, MAX_DESC - 1).trim() + '…' : desc
@@ -47,66 +48,14 @@ export default async function CategoryPage({ params, searchParams }: Props) {
   const { slug } = await params
   const sParams = await searchParams
 
-  const category = await prisma.category.findUnique({
-    where: { slug: slug },
-  })
-
-  if (!category) {
-    // If not found by exact slug, check if slug is inside name
-    const fallbackCategory = await prisma.category.findFirst({
-      where: {
-        slug: { contains: slug, mode: 'insensitive' },
-      },
-    })
-    if (!fallbackCategory) {
-      notFound()
-    }
-  }
-
-  const activeCategory = category || (await prisma.category.findFirst({
-    where: { slug: { contains: slug, mode: 'insensitive' } },
-  }))
-
-  if (!activeCategory) return notFound()
-
   // Filter params
   const selectedBrand = typeof sParams.brand === 'string' ? sParams.brand : undefined
   const sort = typeof sParams.sort === 'string' ? sParams.sort : 'newest'
 
-  // MPM'in kendi fiyatına göre sırala (mpm_sale_price henüz hesaplanmamış ürünler sona düşer)
-  // Varsayılan sıralamada gerçek fotoğrafı olan ürünler üstte çıksın (Trendyol import placeholder'ı olanlar geride kalsın);
-  // kullanıcı fiyat/stok gibi bir sıralama seçtiğinde o seçime karışmıyoruz.
-  let orderBy: any = [{ has_real_photo: 'desc' }, { createdAt: 'desc' }]
-  if (sort === 'price_asc') orderBy = { mpm_sale_price: { sort: 'asc', nulls: 'last' } }
-  if (sort === 'price_desc') orderBy = { mpm_sale_price: { sort: 'desc', nulls: 'last' } }
-  if (sort === 'stock') orderBy = { stock_qty: 'desc' }
+  const data = await getCachedCategoryData(slug, selectedBrand, sort)
+  if (!data) return notFound()
 
-  const whereClause: any = {
-    categoryId: activeCategory.id,
-    status: { not: 'inactive' },
-  }
-
-  if (selectedBrand) {
-    whereClause.brand = { equals: selectedBrand, mode: 'insensitive' }
-  }
-
-  const [rawProducts, brands] = await Promise.all([
-    prisma.product.findMany({
-      where: whereClause,
-      include: {
-        images: { orderBy: { order: 'asc' }, take: 1 },
-        category: { select: { name: true, slug: true } },
-      },
-      orderBy,
-      take: 40,
-    }),
-    prisma.product.findMany({
-      where: { categoryId: activeCategory.id, brand: { not: null } },
-      select: { brand: true },
-      distinct: ['brand'],
-    }),
-  ])
-
+  const { category: activeCategory, rawProducts, brands } = data
   const products = rawProducts.map(withMpmPrice)
 
   const availableBrands = brands.map((b) => b.brand).filter(Boolean) as string[]

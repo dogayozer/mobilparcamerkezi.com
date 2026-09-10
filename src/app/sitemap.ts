@@ -1,6 +1,11 @@
 import { MetadataRoute } from 'next'
 import { prisma } from '@/lib/prisma'
 
+// Revalidate olmadan bu route build/deploy anında donuyor: admin panelinden yapılan
+// toplu ürün importları (kod deploy'u tetiklemiyor) sitemap'e hiç yansımıyordu. Saatte
+// bir yenilenerek yeni ürünler bir sonraki deploy'u beklemeden Google'a görünür oluyor.
+export const revalidate = 3600
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.mobilparcamerkezi.com'
 

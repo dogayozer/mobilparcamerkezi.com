@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { withMpmPrice, mpmizeText } from '@/lib/utils'
+import { withMpmPrice, mpmizeText, getCategoryIntro } from '@/lib/utils'
 
 export const dynamic = 'force-dynamic'
 
@@ -32,11 +32,13 @@ export async function GET() {
       const p = withMpmPrice(rawP)
       const imgUrl = p.images[0]?.url || `${baseUrl}/placeholder.png`
       const catName = p.category?.name || 'Telefon Parçaları'
+      const categoryIntro = getCategoryIntro(p.category?.slug, p.brand)
+      const feedDescription = (categoryIntro + ' ' + (mpmizeText(p.description_raw) || p.title)).trim()
 
       xml += `  <item>
     <g:id>${p.barcode}</g:id>
     <g:title><![CDATA[${p.title}]]></g:title>
-    <g:description><![CDATA[${mpmizeText(p.description_raw) || p.title}]]></g:description>
+    <g:description><![CDATA[${feedDescription}]]></g:description>
     <g:link>${baseUrl}/urun/${p.slug}</g:link>
     <g:image_link>${imgUrl}</g:image_link>
     <g:brand><![CDATA[${p.brand || 'Mobil Parça Merkezi'}]]></g:brand>

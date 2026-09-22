@@ -5,7 +5,7 @@ import { prisma } from '@/lib/prisma'
 import ProductDetailClient from './ProductDetailClient'
 import ProductCard from '@/components/ProductCard'
 import { ChevronRight } from 'lucide-react'
-import { withMpmPrice, mpmizeText } from '@/lib/utils'
+import { withMpmPrice, mpmizeText, getCategoryIntro } from '@/lib/utils'
 import type { Metadata } from 'next'
 
 interface Props {
@@ -23,7 +23,7 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.mobilparcamerk
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
-  const product = await prisma.product.findUnique({ where: { slug } })
+  const product = await prisma.product.findUnique({ where: { slug }, include: { category: true } })
 
   if (!product) {
     return { title: 'Ürün Bulunamadı | Mobil Parça Merkezi' }
@@ -38,7 +38,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         : product.title.slice(0, MAX_TITLE - 1).trim() + '…'
 
   const defaultDescription = `${product.title} en uygun fiyata Mobil Parça Merkezi'nde. Aynı gün kargo, garantili ve test edilmiş yedek parça.`
-  const rawDesc = mpmizeText(product.description_raw || defaultDescription).replace(/;/g, ' ').replace(/\s+/g, ' ').trim()
+  const categoryIntro = getCategoryIntro(product.category?.slug, product.brand)
+  const rawDesc = (categoryIntro + ' ' + mpmizeText(product.description_raw || defaultDescription))
+    .replace(/;/g, ' ').replace(/\s+/g, ' ').trim()
   const pageDescription = rawDesc.length > MAX_DESC ? rawDesc.slice(0, MAX_DESC - 1).trim() + '…' : rawDesc
 
   return {
@@ -88,9 +90,10 @@ export default async function ProductDetailPage({ params }: Props) {
 
   if (!activeProduct) return notFound()
 
+  const categoryIntro = getCategoryIntro(activeProduct.category?.slug, activeProduct.brand)
   const productWithMpmPrice = {
     ...withMpmPrice(activeProduct),
-    description_raw: mpmizeText(activeProduct.description_raw),
+    description_raw: (categoryIntro + ' ' + mpmizeText(activeProduct.description_raw || '')).trim(),
   }
 
   // Related products in the same category

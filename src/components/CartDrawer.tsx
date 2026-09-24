@@ -8,13 +8,12 @@ import { formatPrice } from '@/lib/utils'
 import { X, ShoppingBag, Plus, Minus, Trash2, ArrowRight, ShieldCheck, Truck } from 'lucide-react'
 
 export default function CartDrawer() {
-  const { cart, isCartOpen, setIsCartOpen, updateQuantity, removeFromCart, totalPrice, totalItems } = useCart()
+  const { cart, isCartOpen, setIsCartOpen, updateQuantity, removeFromCart, totalPrice, totalItems, shippingThreshold, shippingCost } = useCart()
 
   if (!isCartOpen) return null
 
-  const freeShippingThreshold = 500
-  const remainingForFreeShipping = Math.max(0, freeShippingThreshold - totalPrice)
-  const shippingProgress = Math.min(100, (totalPrice / freeShippingThreshold) * 100)
+  const remainingForFreeShipping = Math.max(0, shippingThreshold - totalPrice)
+  const shippingProgress = Math.min(100, (totalPrice / shippingThreshold) * 100)
 
   return (
     <div className="fixed inset-0 z-50 overflow-hidden">
@@ -170,17 +169,17 @@ export default function CartDrawer() {
                 <div className="flex justify-between text-sm text-ink-soft">
                   <span>Kargo Ücreti</span>
                   <span>
-                    {remainingForFreeShipping === 0 ? (
+                    {shippingCost === 0 ? (
                       <span className="text-emerald-700 font-bold">Ücretsiz</span>
                     ) : (
-                      formatPrice(90)
+                      formatPrice(shippingCost)
                     )}
                   </span>
                 </div>
                 <div className="flex justify-between text-base font-display font-extrabold text-ink pt-2 border-t border-dashed border-ink/15">
                   <span className="uppercase">Genel Toplam</span>
                   <span className="text-lg">
-                    {formatPrice(totalPrice + (remainingForFreeShipping === 0 ? 0 : 90))}
+                    {formatPrice(totalPrice + shippingCost)}
                   </span>
                 </div>
               </div>

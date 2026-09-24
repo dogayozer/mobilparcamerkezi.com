@@ -19,14 +19,13 @@ import {
 } from 'lucide-react'
 
 export default function CartPage() {
-  const { cart, updateQuantity, removeFromCart, clearCart, totalPrice, totalItems } = useCart()
+  const { cart, updateQuantity, removeFromCart, clearCart, totalPrice, totalItems, shippingThreshold, shippingCost } = useCart()
   const [couponCode, setCouponCode] = useState('')
   const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discount: number } | null>(null)
   const [couponError, setCouponError] = useState('')
 
-  const freeShippingThreshold = 500
-  const remainingForFreeShipping = Math.max(0, freeShippingThreshold - totalPrice)
-  const shippingFee = totalPrice >= freeShippingThreshold || totalPrice === 0 ? 0 : 90
+  const remainingForFreeShipping = Math.max(0, shippingThreshold - totalPrice)
+  const shippingFee = shippingCost
 
   const discountAmount = appliedCoupon ? appliedCoupon.discount : 0
   const grandTotal = Math.max(0, totalPrice - discountAmount + shippingFee)

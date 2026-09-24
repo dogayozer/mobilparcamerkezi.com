@@ -26,11 +26,25 @@ interface CartContextType {
   totalPrice: number
   isCartOpen: boolean
   setIsCartOpen: (open: boolean) => void
+  shippingThreshold: number
+  // Sepetin şu anki tutarına göre uygulanacak kargo ücreti (eşik aşıldıysa 0)
+  shippingCost: number
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined)
 
-export function CartProvider({ children }: { children: React.ReactNode }) {
+// Kargo eşiği/ücreti admin panelindeki mağaza ayarlarından (layout'ta çekilip) buraya
+// geliyor; sepet çekmecesi, sepet sayfası ve ödeme sayfası aynı değeri kullanıyor,
+// sunucu (api/checkout/paytr) da aynı ayarla hesaplıyor.
+export function CartProvider({
+  children,
+  shippingThreshold,
+  shippingFee,
+}: {
+  children: React.ReactNode
+  shippingThreshold: number
+  shippingFee: number
+}) {
   const [cart, setCart] = useState<CartItem[]>([])
   const [isLoaded, setIsLoaded] = useState(false)
   const [isCartOpen, setIsCartOpen] = useState(false)
@@ -119,6 +133,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const totalItems = cart.reduce((total, item) => total + item.quantity, 0)
   const totalPrice = cart.reduce((total, item) => total + item.price * item.quantity, 0)
+  const shippingCost = totalPrice === 0 || totalPrice >= shippingThreshold ? 0 : shippingFee
 
   return (
     <CartContext.Provider
@@ -132,6 +147,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         totalPrice,
         isCartOpen,
         setIsCartOpen,
+        shippingThreshold,
+        shippingCost,
       }}
     >
       {children}

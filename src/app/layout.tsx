@@ -65,7 +65,7 @@ export default async function RootLayout({
   return (
     <html lang="tr" className={`${inter.variable} ${bigShoulders.variable} ${plexMono.variable}`}>
       <body className={`${inter.className} min-h-screen flex flex-col bg-paper text-ink selection:bg-yellow-500 selection:text-ink pb-16 md:pb-0`}>
-        <CartProvider>
+        <CartProvider shippingThreshold={settings.shippingThreshold ?? 500} shippingFee={settings.shippingFee ?? 90}>
           <Header categories={categories} settings={settings} topBrands={topBrands} />
           <main className="flex-1">{children}</main>
           <Footer settings={settings} />

@@ -220,7 +220,7 @@ export default function Header({ categories = [], settings, topBrands = [] }: He
             {/* Bayi Girişi */}
             <Link
               href="/bayi"
-              className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-md text-xs font-bold text-ink hover:text-yellow-700 hover:bg-paper-2 transition"
+              className="hidden sm:flex items-center gap-1.5 px-3.5 py-2 rounded-md text-xs font-bold text-ink bg-yellow-500 hover:bg-yellow-400 border-[2.5px] border-ink transition"
             >
               <Store className="w-4 h-4" />
               Bayi Girişi

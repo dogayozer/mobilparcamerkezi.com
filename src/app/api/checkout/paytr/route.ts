@@ -1,15 +1,53 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { generatePayTRToken } from '@/lib/paytr'
+import { getStoreSettings } from '@/lib/data'
+import { withMpmPrice } from '@/lib/utils'
 
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-    const { customer, items, totalAmount, shippingCost } = body
+    const { customer, items } = body
 
     if (!customer || !items || items.length === 0) {
       return NextResponse.json({ error: 'Geçersiz sipariş verisi' }, { status: 400 })
     }
+
+    // GÜVENLİK: Tarayıcıdan gelen fiyat/tutar/kargo bilgisine güvenilmez — istek
+    // değiştirilerek sipariş istenen fiyattan ödenebilirdi. Ürün fiyatları MPM fiyat
+    // kuralıyla (withMpmPrice) veritabanından, kargo ücreti de mağaza ayarlarından
+    // sunucuda yeniden hesaplanır.
+    const productIds = items.map((it: any) => String(it.productId))
+    const dbProducts = await prisma.product.findMany({
+      where: { id: { in: productIds } },
+      select: {
+        id: true,
+        title: true,
+        sale_price: true,
+        reference_price: true,
+        original_excel_price: true,
+        mpm_sale_price: true,
+        mpm_reference_price: true,
+      },
+    })
+    const productsById = new Map(dbProducts.map((p) => [p.id, withMpmPrice(p)]))
+
+    const orderItems: { productId: string; title: string; price: number; quantity: number }[] = []
+    for (const it of items) {
+      const product = productsById.get(String(it.productId))
+      const quantity = Math.floor(Number(it.quantity))
+      if (!product || !(quantity > 0)) {
+        return NextResponse.json({ error: `Ürün bulunamadı: ${it.title || it.productId}` }, { status: 400 })
+      }
+      orderItems.push({ productId: product.id, title: product.title, price: product.sale_price, quantity })
+    }
+
+    const settings = await getStoreSettings()
+    const itemsTotal = orderItems.reduce((sum, it) => sum + it.price * it.quantity, 0)
+    const shippingThreshold = settings.shippingThreshold ?? 500
+    const shippingFee = settings.shippingFee ?? 90
+    const shippingCost = itemsTotal >= shippingThreshold ? 0 : shippingFee
+    const totalAmount = itemsTotal + shippingCost
 
     // PayTR merchant_oid alfanumerik olmak zorunda, tire/özel karakter kabul etmiyor
     // (canlı testte "merchant_oid alfanumerik olmalidir" hatasıyla doğrulandı).
@@ -40,7 +78,7 @@ export async function POST(req: Request) {
         orderNumber,
         customerId: dbCustomer.id,
         totalAmount,
-        shippingCost: shippingCost || 0,
+        shippingCost,
         shippingCity: customer.city,
         shippingDistrict: customer.district,
         shippingAddress: customer.address,
@@ -48,7 +86,7 @@ export async function POST(req: Request) {
         status: 'pending',
         store: 'mpm',
         items: {
-          create: items.map((it: any) => ({
+          create: orderItems.map((it) => ({
             productId: it.productId,
             quantity: it.quantity,
             price: it.price,
@@ -63,7 +101,7 @@ export async function POST(req: Request) {
     const merchant_salt = process.env.PAYTR_MERCHANT_SALT
 
     if (merchant_id && merchant_key && merchant_salt) {
-      const user_basket: Array<[string, string, number]> = items.map((it: any) => [
+      const user_basket: Array<[string, string, number]> = orderItems.map((it) => [
         it.title.substring(0, 50),
         it.price.toString(),
         it.quantity,

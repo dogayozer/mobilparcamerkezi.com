@@ -4,9 +4,12 @@ import React, { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Lock, Mail, User, Phone, ArrowRight } from 'lucide-react'
+import { BUSINESS_TYPES } from '@/lib/accountTypes'
 
 export default function RegisterPage() {
   const router = useRouter()
+  const [accountType, setAccountType] = useState<'bireysel' | 'isletme'>('bireysel')
+  const [businessType, setBusinessType] = useState('')
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
@@ -23,7 +26,7 @@ export default function RegisterPage() {
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, phone, password }),
+        body: JSON.stringify({ name, email, phone, password, accountType, businessType }),
       })
 
       const data = await res.json()
@@ -58,6 +61,44 @@ export default function RegisterPage() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-xs font-bold text-slate-700 mb-1">Hesap Türü</label>
+            <div className="grid grid-cols-2 gap-2">
+              {([['bireysel', 'Bireysel'], ['isletme', 'İşletme']] as const).map(([value, label]) => (
+                <button
+                  key={value}
+                  type="button"
+                  onClick={() => {
+                    setAccountType(value)
+                    if (value === 'bireysel') setBusinessType('')
+                  }}
+                  className={`py-2.5 rounded-xl border text-xs font-bold transition ${
+                    accountType === value
+                      ? 'bg-blue-600 border-blue-600 text-white'
+                      : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-white'
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+            {accountType === 'isletme' && (
+              <select
+                required
+                value={businessType}
+                onChange={(e) => setBusinessType(e.target.value)}
+                className="mt-2 w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3 text-xs text-slate-900 focus:ring-2 focus:ring-blue-600 focus:bg-white"
+              >
+                <option value="">İşletme türünü seçin</option>
+                {BUSINESS_TYPES.map((type) => (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
+                ))}
+              </select>
+            )}
+          </div>
+
           <div>
             <label className="block text-xs font-bold text-slate-700 mb-1">Ad Soyad</label>
             <div className="relative">

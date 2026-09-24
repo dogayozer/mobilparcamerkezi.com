@@ -2,13 +2,19 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { createSession } from '@/lib/auth'
 import bcrypt from 'bcryptjs'
+import { parseAccountType } from '@/lib/accountTypes'
 
 export async function POST(req: Request) {
   try {
-    const { name, email, phone, password } = await req.json()
+    const { name, email, phone, password, accountType: rawAccountType, businessType: rawBusinessType } = await req.json()
 
     if (!name || !email || !password) {
       return NextResponse.json({ error: 'Ad, e-posta ve şifre zorunludur' }, { status: 400 })
+    }
+
+    const account = parseAccountType(rawAccountType, rawBusinessType)
+    if (!account) {
+      return NextResponse.json({ error: 'Lütfen işletme türünü seçin' }, { status: 400 })
     }
 
     const existing = await prisma.customer.findUnique({
@@ -30,6 +36,8 @@ export async function POST(req: Request) {
           phone: phone || existing.phone,
           password: hashedPassword,
           isGuest: false,
+          accountType: account.accountType,
+          businessType: account.businessType,
         },
       })
     } else {
@@ -40,6 +48,8 @@ export async function POST(req: Request) {
           phone: phone || null,
           password: hashedPassword,
           isGuest: false,
+          accountType: account.accountType,
+          businessType: account.businessType,
         },
       })
     }

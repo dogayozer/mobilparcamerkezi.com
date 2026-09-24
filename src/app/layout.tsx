@@ -7,6 +7,7 @@ import Footer from '@/components/Footer'
 import CartDrawer from '@/components/CartDrawer'
 import SmartAssistant from '@/components/SmartAssistant'
 import MobileBottomNav from '@/components/MobileBottomNav'
+import DealerSplash from '@/components/DealerSplash'
 import { getCategoryTree, getStoreSettings, getTopBrands } from '@/lib/data'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
@@ -72,6 +73,7 @@ export default async function RootLayout({
           <CartDrawer />
           <SmartAssistant />
           <MobileBottomNav />
+          <DealerSplash />
         </CartProvider>
       </body>
     </html>

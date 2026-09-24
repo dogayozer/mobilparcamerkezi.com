@@ -18,7 +18,8 @@ import {
   Layers,
   Sparkles,
   Package,
-  Wrench
+  Wrench,
+  Store
 } from 'lucide-react'
 
 interface HeaderProps {
@@ -216,6 +217,15 @@ export default function Header({ categories = [], settings, topBrands = [] }: He
 
           {/* Actions: Account & Cart */}
           <div className="flex items-center gap-3">
+            {/* Bayi Girişi */}
+            <Link
+              href="/bayi"
+              className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-md text-xs font-bold text-ink hover:text-yellow-700 hover:bg-paper-2 transition"
+            >
+              <Store className="w-4 h-4" />
+              Bayi Girişi
+            </Link>
+
             {/* Account Link */}
             <Link
               href="/hesabim"
@@ -389,6 +399,14 @@ export default function Header({ categories = [], settings, topBrands = [] }: He
                 >
                   <User className="w-4 h-4 text-yellow-700" />
                   <span>Hesabım</span>
+                </Link>
+                <Link
+                  href="/bayi"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center gap-2 py-2 px-3 text-sm font-semibold text-ink"
+                >
+                  <Store className="w-4 h-4 text-yellow-700" />
+                  <span>Bayi Girişi</span>
                 </Link>
                 <Link
                   href="/hakkimizda"

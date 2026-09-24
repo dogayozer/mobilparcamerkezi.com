@@ -1,19 +1,24 @@
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
+import {
+  ADMIN_PASSWORD,
+  ADMIN_SESSION_COOKIE,
+  ADMIN_SESSION_MAX_AGE,
+  createAdminSessionToken,
+} from '@/lib/adminSession'
 
 export async function POST(req: Request) {
   try {
     const { password } = await req.json()
-    const correctPassword = process.env.ADMIN_PASSWORD || 'mpmadmin2026'
 
-    if (password === correctPassword) {
+    if (password === ADMIN_PASSWORD) {
       const cookieStore: any = cookies()
       const store = cookieStore instanceof Promise ? await cookieStore : cookieStore
-      store.set('admin_session', 'authenticated', {
+      store.set(ADMIN_SESSION_COOKIE, await createAdminSessionToken(), {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',
-        maxAge: 7 * 24 * 60 * 60,
+        maxAge: ADMIN_SESSION_MAX_AGE,
         path: '/',
       })
       return NextResponse.json({ success: true })
@@ -28,6 +33,6 @@ export async function POST(req: Request) {
 export async function DELETE() {
   const cookieStore: any = cookies()
   const store = cookieStore instanceof Promise ? await cookieStore : cookieStore
-  store.delete('admin_session')
+  store.delete(ADMIN_SESSION_COOKIE)
   return NextResponse.json({ success: true })
 }

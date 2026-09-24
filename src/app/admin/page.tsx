@@ -3,6 +3,7 @@ import { cookies } from 'next/headers'
 import Dashboard from './Dashboard'
 import LoginForm from './LoginForm'
 import { prisma } from '@/lib/prisma'
+import { verifyAdminSessionToken } from '@/lib/adminSession'
 
 export const revalidate = 0
 
@@ -11,7 +12,7 @@ export default async function AdminPage() {
   const store = cookieStore instanceof Promise ? await cookieStore : cookieStore
   const session = store.get('admin_session')
 
-  if (session?.value !== 'authenticated') {
+  if (!(await verifyAdminSessionToken(session?.value))) {
     return <LoginForm />
   }
 

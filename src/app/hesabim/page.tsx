@@ -4,9 +4,18 @@ import Link from 'next/link'
 import { getSession } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { formatPrice } from '@/lib/utils'
-import { User, Package, MapPin, LogOut, ShoppingBag } from 'lucide-react'
+import { User, Package, MapPin, LogOut, ShoppingBag, FileText, Truck } from 'lucide-react'
 
 export const revalidate = 0
+
+const STATUS_LABELS: Record<string, { label: string; className: string }> = {
+  pending: { label: 'Ödeme Bekleniyor', className: 'bg-amber-100 text-amber-800' },
+  processing: { label: 'Sipariş Alındı', className: 'bg-blue-100 text-blue-800' },
+  in_progress: { label: 'Hazırlanıyor', className: 'bg-sky-100 text-sky-800' },
+  shipped: { label: 'Kargoya Verildi', className: 'bg-indigo-100 text-indigo-800' },
+  delivered: { label: 'Teslim Edildi', className: 'bg-emerald-100 text-emerald-800' },
+  cancelled: { label: 'İptal Edildi', className: 'bg-rose-100 text-rose-800' },
+}
 
 export default async function AccountPage() {
   const session = await getSession()
@@ -125,8 +134,8 @@ export default async function AccountPage() {
                       </div>
 
                       <div className="flex items-center gap-3">
-                        <span className="px-2.5 py-1 rounded-lg bg-blue-100 text-blue-800 text-[11px] font-bold uppercase">
-                          {ord.status}
+                        <span className={`px-2.5 py-1 rounded-lg text-[11px] font-bold uppercase ${STATUS_LABELS[ord.status]?.className ?? 'bg-slate-100 text-slate-800'}`}>
+                          {STATUS_LABELS[ord.status]?.label ?? ord.status}
                         </span>
                         <span className="text-sm font-black text-slate-900">
                           {formatPrice(ord.totalAmount)}
@@ -142,6 +151,28 @@ export default async function AccountPage() {
                         </div>
                       ))}
                     </div>
+
+                    {(ord.trackingNumber || ord.invoiceUrl) && (
+                      <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-slate-200">
+                        {ord.trackingNumber && (
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-[11px] text-slate-700">
+                            <Truck className="w-3.5 h-3.5" />
+                            {ord.shippingCompany ? `${ord.shippingCompany} · ` : ''}Takip No: <strong className="font-mono">{ord.trackingNumber}</strong>
+                          </span>
+                        )}
+                        {ord.invoiceUrl && (
+                          <a
+                            href={ord.invoiceUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700 hover:bg-emerald-100 text-[11px] font-bold"
+                          >
+                            <FileText className="w-3.5 h-3.5" />
+                            Faturayı Görüntüle (PDF)
+                          </a>
+                        )}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>

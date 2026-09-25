@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { generatePayTRToken } from '@/lib/paytr'
 import { getStoreSettings } from '@/lib/data'
 import { withMpmPrice } from '@/lib/utils'
+import { matchIl, matchIlce } from '@/lib/ilIlce'
 
 export async function POST(req: Request) {
   try {
@@ -12,6 +13,15 @@ export async function POST(req: Request) {
     if (!customer || !items || items.length === 0) {
       return NextResponse.json({ error: 'Geçersiz sipariş verisi' }, { status: 400 })
     }
+
+    // E-fatura (BirFatura) geçerli bir il/ilçe istiyor; serbest metin kabul edilmez.
+    const city = matchIl(customer.city)
+    const district = matchIlce(city, customer.district)
+    if (!city || !district) {
+      return NextResponse.json({ error: 'Lütfen il ve ilçeyi listeden seçin' }, { status: 400 })
+    }
+    customer.city = city
+    customer.district = district
 
     // GÜVENLİK: Tarayıcıdan gelen fiyat/tutar/kargo bilgisine güvenilmez — istek
     // değiştirilerek sipariş istenen fiyattan ödenebilirdi. Ürün fiyatları MPM fiyat

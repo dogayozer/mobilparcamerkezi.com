@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useCart } from '@/context/CartContext'
 import { formatPrice } from '@/lib/utils'
+import { IlIlceSelects } from '@/components/IlIlceSelects'
 import {
   ShieldCheck,
   CreditCard,
@@ -252,31 +253,16 @@ export function CheckoutClient() {
               </h2>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Şehir *</label>
-                  <input
-                    type="text"
-                    name="city"
-                    required
-                    value={formData.city}
-                    onChange={handleChange}
-                    placeholder="Şehir"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:ring-2 focus:ring-blue-600 focus:bg-white"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">İlçe *</label>
-                  <input
-                    type="text"
-                    name="district"
-                    required
-                    value={formData.district}
-                    onChange={handleChange}
-                    placeholder="İlçe"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:ring-2 focus:ring-blue-600 focus:bg-white"
-                  />
-                </div>
+                <IlIlceSelects
+                  city={formData.city}
+                  district={formData.district}
+                  onChange={(city, district) => setFormData((f) => ({ ...f, city, district }))}
+                  required
+                  cityLabel="Şehir *"
+                  districtLabel="İlçe *"
+                  labelClassName="block text-xs font-bold text-slate-700 mb-1"
+                  selectClassName="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:ring-2 focus:ring-blue-600 focus:bg-white disabled:text-slate-400"
+                />
 
                 <div className="sm:col-span-2">
                   <label className="block text-xs font-bold text-slate-700 mb-1">

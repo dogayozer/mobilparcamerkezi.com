@@ -21,13 +21,48 @@ type MpmPriceableProduct = {
   original_excel_price?: number | null
 }
 
+// Sonuç client bileşenlerine / public API'lere gidiyor: maliyet (Excel) fiyatı, Trendyol
+// linki gibi iç alanlar HTML'e gömülmesin diye burada ayıklanıyor.
+type InternalProductFields =
+  | 'original_excel_price'
+  | 'mpm_sale_price'
+  | 'mpm_reference_price'
+  | 'trendyol_url'
+  | 'last_synced_at'
+
 export function withMpmPrice<T extends MpmPriceableProduct>(
   product: T
-): T & { sale_price: number; reference_price: number | null } {
+): Omit<T, InternalProductFields> & { sale_price: number; reference_price: number | null } {
   const sale_price =
     product.mpm_sale_price ?? product.original_excel_price ?? product.sale_price
   const reference_price = product.mpm_reference_price ?? product.reference_price ?? null
-  return { ...product, sale_price, reference_price }
+  const {
+    original_excel_price: _excel,
+    mpm_sale_price: _mpmSale,
+    mpm_reference_price: _mpmRef,
+    trendyol_url: _trendyol,
+    last_synced_at: _synced,
+    ...rest
+  } = product as T & { trendyol_url?: unknown; last_synced_at?: unknown }
+  const description = (rest as { description_raw?: unknown }).description_raw
+  return {
+    ...rest,
+    ...(typeof description === 'string' ? { description_raw: mpmizeText(description) } : {}),
+    sale_price,
+    reference_price,
+  }
+}
+
+// Başlıktaki cihaz model kodlarını (M2006C3MII, 22081212UG gibi) atarak SEO başlığı için
+// Fodos'taki başlıktan farklı, okunur bir ürün adı üretir.
+export function seoProductName(title: string): string {
+  const cleaned = title
+    .split(/\s+/)
+    .filter((token) => !(token.length >= 6 && /\d/.test(token) && /^[A-Z0-9-]+$/.test(token)))
+    .join(' ')
+    .replace(/\s+-\s*$/, '')
+    .trim()
+  return cleaned || title
 }
 
 // Ürün açıklamaları (description_raw) Fodos ile ortak veritabanından geliyor ve

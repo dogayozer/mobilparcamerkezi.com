@@ -5,7 +5,7 @@ import { prisma } from '@/lib/prisma'
 import ProductDetailClient from './ProductDetailClient'
 import ProductCard from '@/components/ProductCard'
 import { ChevronRight } from 'lucide-react'
-import { withMpmPrice, mpmizeText, getCategoryIntro } from '@/lib/utils'
+import { withMpmPrice, mpmizeText, getCategoryIntro, seoProductName, formatPrice } from '@/lib/utils'
 import type { Metadata } from 'next'
 
 interface Props {
@@ -29,18 +29,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return { title: 'Ürün Bulunamadı | Mobil Parça Merkezi' }
   }
 
+  // Fodos ile aynı ürün başlığını kullanmamak için model kodları atılıp marka eki ekleniyor.
+  const name = seoProductName(product.title)
+  const longSuffix = ' | Mobil Parça Merkezi'
   const shortSuffix = ' | MPM'
   const pageTitle =
-    product.title.length + shortSuffix.length <= MAX_TITLE
-      ? `${product.title}${shortSuffix}`
-      : product.title.length <= MAX_TITLE
-        ? product.title
-        : product.title.slice(0, MAX_TITLE - 1).trim() + '…'
+    name.length + longSuffix.length <= MAX_TITLE
+      ? `${name}${longSuffix}`
+      : name.length + shortSuffix.length <= MAX_TITLE
+        ? `${name}${shortSuffix}`
+        : name.slice(0, MAX_TITLE - shortSuffix.length - 1).trim() + '…' + shortSuffix
 
-  const defaultDescription = `${product.title} en uygun fiyata Mobil Parça Merkezi'nde. Aynı gün kargo, garantili ve test edilmiş yedek parça.`
+  const price = formatPrice(withMpmPrice(product).sale_price)
+  const availability = product.stock_qty > 0 ? 'stokta' : 'şu an tükendi'
   const categoryIntro = getCategoryIntro(product.category?.slug, product.brand)
-  const rawDesc = (categoryIntro + ' ' + mpmizeText(product.description_raw || defaultDescription))
-    .replace(/;/g, ' ').replace(/\s+/g, ' ').trim()
+  const rawDesc = `${name} ${price}, ${availability}. Aynı gün kargo, garantili ve test edilmiş yedek parça Mobil Parça Merkezi'nde. ${categoryIntro}`
+    .replace(/\s+/g, ' ').trim()
   const pageDescription = rawDesc.length > MAX_DESC ? rawDesc.slice(0, MAX_DESC - 1).trim() + '…' : rawDesc
 
   return {

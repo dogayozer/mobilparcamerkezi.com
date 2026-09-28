@@ -2,7 +2,8 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { withMpmPrice, mpmizeText, getCategoryIntro } from '@/lib/utils'
 
-export const dynamic = 'force-dynamic'
+// Her istekte DB'den üretilmesin (Neon ağ trafiği/compute maliyeti); saatte bir yeniden üretilir.
+export const revalidate = 3600
 
 export async function GET() {
   try {

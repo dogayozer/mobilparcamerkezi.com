@@ -71,6 +71,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/mesafeli-satis-sozlesmesi',
     '/kvkk',
     '/kargo-takibi',
+    '/kampanya/adaptor',
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     changeFrequency: 'monthly' as const,

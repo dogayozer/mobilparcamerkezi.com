@@ -8,6 +8,10 @@ import CartDrawer from '@/components/CartDrawer'
 import SmartAssistant from '@/components/SmartAssistant'
 import MobileBottomNav from '@/components/MobileBottomNav'
 import DealerSplash from '@/components/DealerSplash'
+import CampaignSplash from '@/components/CampaignSplash'
+import Link from 'next/link'
+import { CAMPAIGN } from '@/lib/campaignConfig'
+import { getCampaignShowcase } from '@/lib/campaign'
 import { getCategoryTree, getStoreSettings, getTopBrands } from '@/lib/data'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
@@ -62,18 +66,29 @@ export default async function RootLayout({
     getStoreSettings(),
     getTopBrands(7),
   ])
+  const showcase = CAMPAIGN.active ? await getCampaignShowcase() : null
+  const campaignLive = !!showcase && showcase.items.length > 0
 
   return (
     <html lang="tr" className={`${inter.variable} ${bigShoulders.variable} ${plexMono.variable}`}>
       <body className={`${inter.className} min-h-screen flex flex-col bg-paper text-ink selection:bg-yellow-500 selection:text-ink pb-16 md:pb-0`}>
         <CartProvider shippingThreshold={settings.shippingThreshold ?? 500} shippingFee={settings.shippingFee ?? 90}>
+          {campaignLive && (
+            <Link
+              href={CAMPAIGN.path}
+              className="block bg-yellow-500 hover:bg-yellow-400 text-ink text-center text-[11px] sm:text-xs font-display font-extrabold uppercase tracking-wide py-2 px-3 transition-colors"
+            >
+              {CAMPAIGN.name} başladı{showcase!.maxDiscount > 0 ? ` — %${showcase!.maxDiscount}'e varan indirim` : ''} · Kampanyalı adaptörlere git →
+            </Link>
+          )}
           <Header categories={categories} settings={settings} topBrands={topBrands} />
           <main className="flex-1">{children}</main>
           <Footer settings={settings} />
           <CartDrawer />
           <SmartAssistant />
           <MobileBottomNav />
-          <DealerSplash />
+          {campaignLive && <CampaignSplash items={showcase!.items} maxDiscount={showcase!.maxDiscount} total={showcase!.total} />}
+          <DealerSplash waitForCampaign={campaignLive} />
         </CartProvider>
       </body>
     </html>

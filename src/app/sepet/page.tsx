@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useCart } from '@/context/CartContext'
 import { formatPrice } from '@/lib/utils'
+import { CAMPAIGN } from '@/lib/campaignConfig'
 import {
   ShoppingBag,
   Trash2,
@@ -49,9 +50,25 @@ export default function CartPage() {
     }
   }
 
+  const campaignReminder = CAMPAIGN.active ? (
+    <Link
+      href={CAMPAIGN.path}
+      className="mb-6 flex items-center justify-between gap-3 rounded-md border-2 border-ink bg-yellow-500 px-4 py-3 hover:bg-yellow-400 transition-colors"
+    >
+      <span className="text-xs sm:text-sm text-ink font-semibold">
+        <strong className="font-display font-extrabold uppercase">{CAMPAIGN.name}</strong> devam ediyor — sepetinize kampanyalı adaptör ekleyin.
+      </span>
+      <span className="flex items-center gap-1 text-[11px] sm:text-xs font-display font-extrabold uppercase text-ink whitespace-nowrap">
+        Kampanyalı adaptörlere git <ArrowRight className="w-4 h-4" />
+      </span>
+    </Link>
+  ) : null
+
   if (cart.length === 0) {
     return (
-      <div className="max-w-4xl mx-auto px-4 py-20 text-center">
+      <div className="max-w-4xl mx-auto px-4 pt-10 pb-20 text-center">
+        {campaignReminder}
+        <div className="pt-10">
         <div className="w-24 h-24 rounded-3xl bg-slate-100 flex items-center justify-center mx-auto mb-6 text-slate-400">
           <ShoppingBag className="w-12 h-12" />
         </div>
@@ -66,12 +83,14 @@ export default function CartPage() {
           <span>Alışverişe Başla</span>
           <ArrowRight className="w-4 h-4" />
         </Link>
+        </div>
       </div>
     )
   }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      {campaignReminder}
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-2xl sm:text-3xl font-black text-slate-900">Alışveriş Sepetim</h1>

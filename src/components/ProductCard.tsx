@@ -21,6 +21,7 @@ interface ProductCardProps {
     status: string
     images?: Array<{ url: string }>
     category?: { name: string; slug?: string } | null
+    campaign?: string | null
   }
 }
 
@@ -54,6 +55,11 @@ export default function ProductCard({ product }: ProductCardProps) {
         {discountPercent > 0 && (
           <span className="bg-yellow-500 text-ink text-[10.5px] font-mono font-bold px-2 py-0.5 rounded-sm tracking-wide">
             %{discountPercent}
+          </span>
+        )}
+        {product.campaign && (
+          <span className="bg-ink text-yellow-500 text-[9.5px] font-mono font-bold px-2 py-0.5 rounded-sm tracking-wide">
+            KAMPANYA
           </span>
         )}
         {isLowStock && (

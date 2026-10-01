@@ -130,7 +130,8 @@ export async function POST(req: Request) {
         merchant_ok_url: `${protocol}://${host}/odeme/basarili?orderNumber=${orderNumber}`,
         merchant_fail_url: `${protocol}://${host}/odeme/basarisiz?orderNumber=${orderNumber}`,
         user_basket,
-        user_ip: req.headers.get('x-forwarded-for') || '127.0.0.1',
+        // x-forwarded-for "istemci, proxy1, proxy2" olabilir; PayTR tek ve geçerli bir (müşteri) IP ister
+        user_ip: (req.headers.get('x-forwarded-for')?.split(',')[0].trim() || req.headers.get('x-real-ip') || '85.105.0.0'),
       })
 
       // Request PayTR iFrame token from PayTR endpoint

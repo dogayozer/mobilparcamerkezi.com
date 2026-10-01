@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
@@ -38,6 +38,22 @@ export function CheckoutClient() {
   // sunucu da aynı ayarla hesaplıyor — eskiden burada 500 TL / 90 TL sabit yazılıydı.
   const shippingFee = shippingCost
   const grandTotal = totalPrice + shippingFee
+
+  // PayTR'ın önerdiği iframe boyutlandırıcı: kart formu, taksit tablosu ve banka 3D Secure ekranı yüksekliği
+  // değiştirdiği için sabit yükseklikte (özellikle telefonda) kesiliyordu.
+  useEffect(() => {
+    if (!paytrIframeUrl) return
+    const script = document.createElement('script')
+    script.src = 'https://www.paytr.com/js/iframeResizer.min.js'
+    script.async = true
+    script.onload = () => {
+      if ((window as any).iFrameResize) (window as any).iFrameResize({}, '#paytriframe')
+    }
+    document.body.appendChild(script)
+    return () => {
+      document.body.removeChild(script)
+    }
+  }, [paytrIframeUrl])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -172,7 +188,10 @@ export function CheckoutClient() {
             </h2>
             <iframe
               src={paytrIframeUrl}
-              className="w-full h-[650px] border-0 rounded-2xl"
+              id="paytriframe"
+              scrolling="no"
+              className="w-full border-0 rounded-2xl"
+              style={{ width: '100%', minHeight: '650px' }}
               title="PayTR Ödeme"
             />
           </div>

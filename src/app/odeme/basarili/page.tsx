@@ -4,6 +4,7 @@ import React, { Suspense } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { CheckCircle2, ArrowRight, Package, Home } from 'lucide-react'
+import PaymentReturn from '@/components/PaymentReturn'
 
 function SuccessContent() {
   const searchParams = useSearchParams()
@@ -11,6 +12,7 @@ function SuccessContent() {
 
   return (
     <div className="max-w-xl mx-auto px-4 py-20 text-center">
+      <PaymentReturn clearCart />
       <div className="w-20 h-20 rounded-3xl bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-6 shadow-xl shadow-emerald-500/20">
         <CheckCircle2 className="w-10 h-10" />
       </div>

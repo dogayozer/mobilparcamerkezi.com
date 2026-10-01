@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { verifyPayTRHash } from '@/lib/paytr'
-import { sendHepsijetOrder } from '@/lib/hepsijet'
 
 export async function POST(req: Request) {
   try {
@@ -12,6 +11,8 @@ export async function POST(req: Request) {
     const hash = formData.get('hash') as string
     const failed_reason_code = formData.get('failed_reason_code') as string
     const failed_reason_msg = formData.get('failed_reason_msg') as string
+    const test_mode = formData.get('test_mode') as string | null
+    const payment_type = formData.get('payment_type') as string | null
 
     if (!merchant_oid || !status || !hash) {
       return new Response('PAYTR notification failed: missing parameters', { status: 400 })
@@ -24,47 +25,37 @@ export async function POST(req: Request) {
     }
 
     if (status === 'success') {
+      const amountTl = parseFloat(total_amount) / 100
+
+      // PayTR mağaza test modundayken (veya canlıda test işleminde) bildirime test_mode=1 ekler;
+      // bu durumda gerçek tahsilat yoktur: siparişi ONAYLAMA (faturalanıp kargolanmasın), nota işle.
+      if (test_mode === '1') {
+        const existing = await prisma.order.findUnique({
+          where: { orderNumber: merchant_oid },
+          select: { status: true, adminNote: true },
+        })
+        if (existing && existing.status === 'pending') {
+          await prisma.order.update({
+            where: { orderNumber: merchant_oid },
+            data: {
+              adminNote: [existing.adminNote, `PayTR TEST modunda işlem — gerçek tahsilat yok, sipariş onaylanmadı. Tutar: ${amountTl} TL`]
+                .filter(Boolean)
+                .join('\n'),
+            },
+          })
+        }
+        console.warn('PayTR TEST modu ödemesi, sipariş onaylanmadı:', merchant_oid)
+        return new Response('OK', { status: 200 })
+      }
+
       await prisma.order.update({
         where: { orderNumber: merchant_oid },
         data: {
           status: 'processing',
-          adminNote: `PayTR Ödeme Başarılı. Tutar: ${parseFloat(total_amount) / 100} TL`,
+          adminNote: `PayTR Ödeme Başarılı. Tutar: ${amountTl} TL${payment_type ? ` (${payment_type})` : ''}`,
         },
       })
-
-      // Ödeme onaylandığı an HepsiJET'e otomatik gönderi oluştur (STD). Bu adım asla
-      // ödeme webhook'unun PayTR'a "OK" dönmesini engellememeli — hata olursa sadece
-      // logla, sipariş "processing" kalır, admin panelinden manuel tekrar denenebilir.
-      try {
-        const fullOrder = await prisma.order.findUnique({
-          where: { orderNumber: merchant_oid },
-          include: { customer: true }
-        })
-        if (fullOrder && !fullOrder.trackingNumber) {
-          const result = await sendHepsijetOrder({
-            orderNumber: fullOrder.orderNumber,
-            customerName: fullOrder.customer?.name || 'Misafir Müşteri',
-            customerPhone: fullOrder.customer?.phone || '',
-            customerEmail: fullOrder.customer?.email,
-            shippingCity: fullOrder.shippingCity || '',
-            shippingDistrict: fullOrder.shippingDistrict || '',
-            shippingAddress: fullOrder.shippingAddress || '',
-          })
-          if (result.success) {
-            await prisma.order.update({
-              where: { orderNumber: merchant_oid },
-              data: {
-                trackingNumber: result.trackingNumber,
-                shippingCompany: 'HepsiJET',
-              }
-            })
-          } else {
-            console.error('HepsiJET gönderi oluşturma hatası:', result.error)
-          }
-        }
-      } catch (hepsijetError) {
-        console.error('HepsiJET entegrasyon hatası:', hepsijetError)
-      }
+      // HepsiJET gönderisi ödeme sonrası otomatik açılmaz (Fodos'taki gibi): admin panelinden sipariş bazında açılır.
     } else {
       await prisma.order.update({
         where: { orderNumber: merchant_oid },

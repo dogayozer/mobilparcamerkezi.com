@@ -55,6 +55,17 @@ export async function POST(req: Request) {
           adminNote: `PayTR Ödeme Başarılı. Tutar: ${amountTl} TL${payment_type ? ` (${payment_type})` : ''}`,
         },
       })
+      // Admin telefonlarına "yeni sipariş" bildirimi (push altyapısı Fodos tarafında; hata ödemeyi etkilemesin)
+      try {
+        await fetch('https://www.fodos.com.tr/api/push/order-paid', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ orderNumber: merchant_oid }),
+          signal: AbortSignal.timeout(4000),
+        })
+      } catch (e) {
+        console.error('Push bildirimi tetiklenemedi:', e)
+      }
       // HepsiJET gönderisi ödeme sonrası otomatik açılmaz (Fodos'taki gibi): admin panelinden sipariş bazında açılır.
     } else {
       await prisma.order.update({

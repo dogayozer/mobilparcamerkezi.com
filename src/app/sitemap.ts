@@ -1,5 +1,6 @@
 import { MetadataRoute } from 'next'
 import { prisma } from '@/lib/prisma'
+import { CAMPAIGN } from '@/lib/campaignConfig'
 
 // Revalidate olmadan bu route build/deploy anında donuyor: admin panelinden yapılan
 // toplu ürün importları (kod deploy'u tetiklemiyor) sitemap'e hiç yansımıyordu. Saatte
@@ -71,7 +72,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/mesafeli-satis-sozlesmesi',
     '/kvkk',
     '/kargo-takibi',
-    '/kampanya/adaptor',
+    ...(CAMPAIGN.active ? [CAMPAIGN.path] : []),
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     changeFrequency: 'monthly' as const,

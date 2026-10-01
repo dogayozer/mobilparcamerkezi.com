@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useCart } from '@/context/CartContext'
 import { formatPrice } from '@/lib/utils'
+import { CAMPAIGN } from '@/lib/campaignConfig'
 import { ShoppingBag, Check, Zap, ShieldCheck } from 'lucide-react'
 
 interface ProductCardProps {
@@ -57,7 +58,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             %{discountPercent}
           </span>
         )}
-        {product.campaign && (
+        {product.campaign && CAMPAIGN.active && (
           <span className="bg-ink text-yellow-500 text-[9.5px] font-mono font-bold px-2 py-0.5 rounded-sm tracking-wide">
             KAMPANYA
           </span>

@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const { category } = data
   const pageTitle = `${category.name} | MPM`.length <= MAX_TITLE ? `${category.name} | MPM` : category.name.slice(0, MAX_TITLE - 1).trim() + '…'
-  const desc = `${category.name} çeşitleri uygun fiyatlarla Mobil Parça Merkezi'nde. Garantili, test edilmiş yedek parçalar ve aynı gün kargo.`
+  const desc = `${category.name} çeşitleri uygun fiyatlarla Mobil Parça Merkezi'nde. Garantili, test edilmiş cep telefonu yedek parça ve aynı gün kargo.`
   const pageDescription = desc.length > MAX_DESC ? desc.slice(0, MAX_DESC - 1).trim() + '…' : desc
 
   return {

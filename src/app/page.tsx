@@ -5,6 +5,7 @@ import { getFeaturedBrands, getCategoryTree } from '@/lib/data'
 import { withMpmPrice } from '@/lib/utils'
 import HeroBanner from '@/components/HeroBanner'
 import ProductCard from '@/components/ProductCard'
+import { HomeFaq } from '@/components/HomeFaq'
 import {
   Zap,
   TrendingUp,
@@ -228,6 +229,18 @@ export default async function HomePage() {
             </div>
           </div>
         </section>
+
+        {/* SEO metni: aranan ifadeler görünür içerikte de geçsin */}
+        <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-xl font-bold text-ink mb-3">Cep Telefonu Parçası ve Yedek Parça Merkezi</h2>
+          <p className="text-sm text-ink-soft leading-relaxed">
+            Mobil Parça Merkezi, telefon tamircileri ve bireysel kullanıcılar için cep telefonu parça tedariği sunar.
+            Batarya, ekran, kasa, şarj soketi ve kamera gibi her cep telefonu yedek parça ürünü, markanıza ve modelinize
+            göre kolayca bulunur; stoktaki ürünler hızlıca kargoya verilir.
+          </p>
+        </section>
+
+        <HomeFaq />
       </div>
     </div>
   )

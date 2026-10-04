@@ -30,16 +30,16 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.mobilparcamerk
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: 'Mobil Parça Merkezi - Telefon Yedek Parça, Batarya, Kasa ve Aksesuarlar',
+  title: 'Cep Telefonu Parçası ve Yedek Parça | Mobil Parça Merkezi',
   description:
-    'En kaliteli telefon bataryaları, ekranlar, kasalar, şarj aletleri ve yedek parçalar en uygun fiyat ve aynı gün kargo avantajıyla Mobil Parça Merkezi’nde.',
+    'Cep telefonu parça arıyorsanız: batarya, ekran, kasa, şarj aleti ve her model için cep telefonu yedek parça seçenekleri, uygun fiyat ve aynı gün kargo.',
   alternates: {
     canonical: SITE_URL,
   },
   openGraph: {
-    title: 'Mobil Parça Merkezi - Telefon Yedek Parça, Batarya, Kasa ve Aksesuarlar',
+    title: 'Cep Telefonu Parçası ve Yedek Parça | Mobil Parça Merkezi',
     description:
-      'En kaliteli telefon bataryaları, ekranlar, kasalar, şarj aletleri ve yedek parçalar en uygun fiyat ve aynı gün kargo avantajıyla Mobil Parça Merkezi’nde.',
+      'Cep telefonu parça arıyorsanız: batarya, ekran, kasa, şarj aleti ve her model için cep telefonu yedek parça seçenekleri, uygun fiyat ve aynı gün kargo.',
     url: SITE_URL,
     siteName: 'Mobil Parça Merkezi',
     locale: 'tr_TR',

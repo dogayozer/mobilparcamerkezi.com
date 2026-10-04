@@ -43,7 +43,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const price = formatPrice(withMpmPrice(product).sale_price)
   const availability = product.stock_qty > 0 ? 'stokta' : 'şu an tükendi'
   const categoryIntro = getCategoryIntro(product.category?.slug, product.brand)
-  const rawDesc = `${name} ${price}, ${availability}. Aynı gün kargo, garantili ve test edilmiş yedek parça Mobil Parça Merkezi'nde. ${categoryIntro}`
+  const rawDesc = `${name} ${price}, ${availability}. Aynı gün kargo, garantili ve test edilmiş cep telefonu parçası Mobil Parça Merkezi'nde. ${categoryIntro}`
     .replace(/\s+/g, ' ').trim()
   const pageDescription = rawDesc.length > MAX_DESC ? rawDesc.slice(0, MAX_DESC - 1).trim() + '…' : rawDesc
 

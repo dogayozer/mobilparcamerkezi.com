@@ -148,7 +148,9 @@ export default function ProductDetailClient({ product }: { product: any }) {
               <span className="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200 inline-block">
                 KDV Dahil
               </span>
-              <p className="text-[11px] text-slate-400 mt-1">Saat 16:30 öncesi Aynı Gün Kargo</p>
+              <p className="text-[11px] text-slate-400 mt-1">
+                {product.category?.slug === 'yazilim' ? 'Dijital ürün: aynı gün teslim, kargo yok' : 'Saat 16:30 öncesi Aynı Gün Kargo'}
+              </p>
             </div>
           </div>
 
@@ -217,26 +219,38 @@ export default function ProductDetailClient({ product }: { product: any }) {
 
         {/* Trust & Guarantee Box */}
         <div className="pt-6 border-t border-slate-100 grid grid-cols-2 gap-3 text-xs text-slate-600">
-          <div className="flex items-center gap-2.5 p-3 rounded-xl bg-slate-50 border border-slate-100">
-            <Truck className="w-5 h-5 text-blue-600 shrink-0" />
-            <div>
-              <span className="font-bold text-slate-800 block">Aynı Gün Kargo</span>
-              <span className="text-[11px] text-slate-500">16:30'a kadar verilen siparişlerde</span>
+          {product.category?.slug === 'yazilim' ? (
+            <div className="col-span-2 flex items-center gap-2.5 p-3 rounded-xl bg-slate-50 border border-slate-100">
+              <ShieldCheck className="w-5 h-5 text-emerald-600 shrink-0" />
+              <div>
+                <span className="font-bold text-slate-800 block">Dijital Teslimat</span>
+                <span className="text-[11px] text-slate-500">Aynı gün teslim: lisans anahtarı WhatsApp ile iletilir, kargo yoktur</span>
+              </div>
             </div>
-          </div>
+          ) : (
+            <>
+              <div className="flex items-center gap-2.5 p-3 rounded-xl bg-slate-50 border border-slate-100">
+                <Truck className="w-5 h-5 text-blue-600 shrink-0" />
+                <div>
+                  <span className="font-bold text-slate-800 block">Aynı Gün Kargo</span>
+                  <span className="text-[11px] text-slate-500">16:30'a kadar verilen siparişlerde</span>
+                </div>
+              </div>
 
-          <div className="flex items-center gap-2.5 p-3 rounded-xl bg-slate-50 border border-slate-100">
-            <ShieldCheck className="w-5 h-5 text-emerald-600 shrink-0" />
-            <div>
-              <span className="font-bold text-slate-800 block">%100 Test Edilmiş</span>
-              <span className="text-[11px] text-slate-500">Tam Uyum ve Değişim Garantisi</span>
-            </div>
-          </div>
+              <div className="flex items-center gap-2.5 p-3 rounded-xl bg-slate-50 border border-slate-100">
+                <ShieldCheck className="w-5 h-5 text-emerald-600 shrink-0" />
+                <div>
+                  <span className="font-bold text-slate-800 block">%100 Test Edilmiş</span>
+                  <span className="text-[11px] text-slate-500">Tam Uyum ve Değişim Garantisi</span>
+                </div>
+              </div>
+            </>
+          )}
         </div>
 
         {/* WhatsApp Support Button */}
         <a
-          href={`https://wa.me/905000000000?text=${encodeURIComponent(
+          href={`https://wa.me/905323913141?text=${encodeURIComponent(
             `Merhaba, "${product.title}" (${product.barcode}) ürünü hakkında bilgi almak istiyorum.`
           )}`}
           target="_blank"

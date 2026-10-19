@@ -137,7 +137,7 @@ export default function Header({ categories = [], settings, topBrands = [] }: He
       {/* Top Notification Bar */}
       <div className="bg-ink text-[#cfc7b6] text-xs py-2 px-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-6">
+          <div id="header-shipping-info" className="flex items-center gap-6">
             {shippingOpen ? (
               <div className="flex items-center gap-1.5 font-mono">
                 <Zap className="w-3.5 h-3.5 text-yellow-500" />

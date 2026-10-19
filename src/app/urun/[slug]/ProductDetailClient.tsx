@@ -107,7 +107,7 @@ export default function ProductDetailClient({ product }: { product: any }) {
             ) : (
               <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-200 flex items-center gap-1.5">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                Stokta Hazır ({product.stock_qty} Adet)
+                {product.category?.slug === 'yazilim' ? 'Stokta Hazır' : `Stokta Hazır (${product.stock_qty} Adet)`}
               </span>
             )}
           </div>
@@ -258,7 +258,7 @@ export default function ProductDetailClient({ product }: { product: any }) {
           className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-800 text-xs font-bold transition"
         >
           <Phone className="w-4 h-4 text-emerald-600" />
-          <span>Bu Parça Cihazıma Uyar mı? WhatsApp'tan Sor</span>
+          <span>{product.category?.slug === 'yazilim' ? 'Satın almadan önce soru sor: WhatsApp' : "Bu Parça Cihazıma Uyar mı? WhatsApp'tan Sor"}</span>
         </a>
       </div>
 

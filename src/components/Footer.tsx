@@ -21,7 +21,7 @@ export default function Footer({ settings }: { settings?: any }) {
     <footer className="bg-ink-900 text-[#9a9282] text-sm mt-20">
       <div className="hazard-stripe" />
       {/* Top Features Banner */}
-      <div className="border-b border-yellow-500/10 bg-white/[0.02] py-10 px-4 sm:px-6 lg:px-8">
+      <div id="footer-trust" className="border-b border-yellow-500/10 bg-white/[0.02] py-10 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           <div className="flex items-center gap-4 p-4 rounded-md bg-white/[0.03] border border-yellow-500/10">
             <div className="w-12 h-12 rounded-md bg-yellow-500/10 text-yellow-500 flex items-center justify-center shrink-0 border border-yellow-500/25">

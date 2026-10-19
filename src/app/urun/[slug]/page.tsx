@@ -43,7 +43,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const price = formatPrice(withMpmPrice(product).sale_price)
   const availability = product.stock_qty > 0 ? 'stokta' : 'şu an tükendi'
   const categoryIntro = getCategoryIntro(product.category?.slug, product.brand)
-  const rawDesc = `${name} ${price}, ${availability}. Aynı gün kargo, garantili ve test edilmiş cep telefonu parçası Mobil Parça Merkezi'nde. ${categoryIntro}`
+  const isDigital = product.category?.slug === 'yazilim'
+  const rawDesc = isDigital
+    ? `Dijital ürün, ${price}: sipariş sonrası lisans anahtarı aynı gün WhatsApp ile iletilir, kargo yoktur. Mobil Parça Merkezi'nde. ${name}`
+    : `${name} ${price}, ${availability}. Aynı gün kargo, garantili ve test edilmiş cep telefonu parçası Mobil Parça Merkezi'nde. ${categoryIntro}`
     .replace(/\s+/g, ' ').trim()
   const pageDescription = rawDesc.length > MAX_DESC ? rawDesc.slice(0, MAX_DESC - 1).trim() + '…' : rawDesc
 
@@ -119,6 +122,8 @@ export default async function ProductDetailPage({ params }: Props) {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Dijital (yazılım lisansı) üründe fiziksel ürün şablonu içeren genel alt bilgi şeridi (kargo/iade/test) gizlenir */}
+      {activeProduct.category?.slug === 'yazilim' && <style>{'#footer-trust,#header-shipping-info{display:none}'}</style>}
       {/* Breadcrumb */}
       <nav className="flex items-center gap-1.5 text-xs text-slate-500 mb-6 flex-wrap">
         <Link href="/" className="hover:text-blue-600 transition">

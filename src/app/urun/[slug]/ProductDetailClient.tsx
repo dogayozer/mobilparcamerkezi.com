@@ -224,7 +224,7 @@ export default function ProductDetailClient({ product }: { product: any }) {
               <ShieldCheck className="w-5 h-5 text-emerald-600 shrink-0" />
               <div>
                 <span className="font-bold text-slate-800 block">Dijital Teslimat</span>
-                <span className="text-[11px] text-slate-500">Aynı gün teslim: lisans anahtarı WhatsApp ile iletilir, kargo yoktur</span>
+                <span className="text-[11px] text-slate-500">Aynı gün teslim: lisans anahtarı mail ile iletilir, kargo yoktur</span>
               </div>
             </div>
           ) : (

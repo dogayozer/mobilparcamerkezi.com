@@ -45,7 +45,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const categoryIntro = getCategoryIntro(product.category?.slug, product.brand)
   const isDigital = product.category?.slug === 'yazilim'
   const rawDesc = isDigital
-    ? `Dijital ürün, ${price}: sipariş sonrası lisans anahtarı aynı gün WhatsApp ile iletilir, kargo yoktur. Mobil Parça Merkezi'nde. ${name}`
+    ? `Dijital ürün, ${price}: sipariş sonrası lisans anahtarı aynı gün mail ile iletilir, kargo yoktur. Mobil Parça Merkezi'nde. ${name}`
     : `${name} ${price}, ${availability}. Aynı gün kargo, garantili ve test edilmiş cep telefonu parçası Mobil Parça Merkezi'nde. ${categoryIntro}`
     .replace(/\s+/g, ' ').trim()
   const pageDescription = rawDesc.length > MAX_DESC ? rawDesc.slice(0, MAX_DESC - 1).trim() + '…' : rawDesc

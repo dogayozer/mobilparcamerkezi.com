@@ -267,7 +267,11 @@ export default function ProductDetailClient({ product }: { product: any }) {
         <h3 className="text-lg font-black text-slate-900 mb-4">Ürün Açıklaması ve Özellikleri</h3>
         <div className="prose prose-slate max-w-none text-xs sm:text-sm text-slate-700 leading-relaxed bg-slate-50 p-6 rounded-2xl border border-slate-200/80">
           {product.description_raw ? (
-            <div className="whitespace-pre-line">{product.description_raw}</div>
+            product.category?.slug === 'yazilim' ? (
+              <div className="[&_h3]:font-bold [&_h3]:text-slate-900 [&_h3]:mt-4 [&_h3]:mb-1 [&_p]:my-2 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_img]:max-w-full [&_img]:h-auto [&_img]:rounded-lg [&_figure]:my-4 [&_figcaption]:text-slate-500" dangerouslySetInnerHTML={{ __html: product.description_raw }} />
+            ) : (
+              <div className="whitespace-pre-line">{product.description_raw}</div>
+            )
           ) : (
             <p>
               Bu yedek parça yüksek kalite standartlarında üretilmiş olup cihazınız ile %100 uyumludur. Siparişiniz öncesinde model kodunuzu kontrol ediniz.

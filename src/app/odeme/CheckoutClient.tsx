@@ -30,6 +30,7 @@ export function CheckoutClient() {
     notes: '',
   })
 
+  const [marketingConsent, setMarketingConsent] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [paytrIframeUrl, setPaytrIframeUrl] = useState<string | null>(null)
   const [errorMessage, setErrorMessage] = useState('')
@@ -82,6 +83,7 @@ export function CheckoutClient() {
         body: JSON.stringify({
           customer: formData,
           items: cart,
+          marketingConsent,
         }),
       })
 
@@ -329,6 +331,11 @@ export function CheckoutClient() {
                   {errorMessage}
                 </div>
               )}
+
+              <label className="flex items-start gap-2 cursor-pointer">
+                <input type="checkbox" checked={marketingConsent} onChange={e => setMarketingConsent(e.target.checked)} className="mt-0.5 w-4 h-4 rounded border-slate-300" />
+                <span className="text-xs text-slate-600">Kampanya, indirim ve yeni ürünlerden haberdar olmak için tarafıma e-posta, SMS ve WhatsApp ile Ticari Elektronik İleti gönderilmesine izin veriyorum. (İsteğe bağlı)</span>
+              </label>
 
               <button
                 type="submit"

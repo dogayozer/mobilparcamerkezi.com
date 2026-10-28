@@ -8,7 +8,7 @@ import { matchIl, matchIlce } from '@/lib/ilIlce'
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-    const { customer, items } = body
+    const { customer, items, marketingConsent } = body
 
     if (!customer || !items || items.length === 0) {
       return NextResponse.json({ error: 'Geçersiz sipariş verisi' }, { status: 400 })
@@ -79,6 +79,14 @@ export async function POST(req: Request) {
           address: customer.address,
           isGuest: true,
         },
+      })
+    }
+
+    // Ticari ileti izni: yalnız müşteri kutuyu işaretlediyse kaydedilir; var olan izin bu yolla geri alınmaz
+    if (marketingConsent === true && !dbCustomer.marketingConsent) {
+      await prisma.customer.update({
+        where: { id: dbCustomer.id },
+        data: { marketingConsent: true, marketingConsentAt: new Date(), marketingConsentStore: 'mpm' },
       })
     }
 

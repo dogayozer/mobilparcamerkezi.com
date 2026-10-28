@@ -14,6 +14,7 @@ export default function RegisterPage() {
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
   const [password, setPassword] = useState('')
+  const [acceptMarketing, setAcceptMarketing] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -26,7 +27,7 @@ export default function RegisterPage() {
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, phone, password, accountType, businessType }),
+        body: JSON.stringify({ name, email, phone, password, accountType, businessType, acceptMarketing }),
       })
 
       const data = await res.json()
@@ -157,6 +158,11 @@ export default function RegisterPage() {
               <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
             </div>
           </div>
+
+          <label className="flex items-start gap-2 cursor-pointer">
+            <input type="checkbox" checked={acceptMarketing} onChange={e => setAcceptMarketing(e.target.checked)} className="mt-0.5 w-4 h-4 rounded border-slate-300" />
+            <span className="text-xs text-slate-600">Kampanya, indirim ve yeni ürünlerden haberdar olmak için tarafıma e-posta, SMS ve WhatsApp ile Ticari Elektronik İleti gönderilmesine izin veriyorum. (İsteğe bağlı)</span>
+          </label>
 
           <button
             type="submit"

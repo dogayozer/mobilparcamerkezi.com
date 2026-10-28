@@ -6,7 +6,8 @@ import { parseAccountType } from '@/lib/accountTypes'
 
 export async function POST(req: Request) {
   try {
-    const { name, email, phone, password, accountType: rawAccountType, businessType: rawBusinessType } = await req.json()
+    const { name, email, phone, password, accountType: rawAccountType, businessType: rawBusinessType, acceptMarketing } = await req.json()
+    const consent = acceptMarketing === true ? { marketingConsent: true, marketingConsentAt: new Date(), marketingConsentStore: 'mpm' } : {}
 
     if (!name || !email || !password) {
       return NextResponse.json({ error: 'Ad, e-posta ve şifre zorunludur' }, { status: 400 })
@@ -38,6 +39,7 @@ export async function POST(req: Request) {
           isGuest: false,
           accountType: account.accountType,
           businessType: account.businessType,
+          ...consent,
         },
       })
     } else {
@@ -50,6 +52,7 @@ export async function POST(req: Request) {
           isGuest: false,
           accountType: account.accountType,
           businessType: account.businessType,
+          ...consent,
         },
       })
     }

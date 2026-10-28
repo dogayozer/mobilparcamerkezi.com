@@ -9,6 +9,7 @@ import SmartAssistant from '@/components/SmartAssistant'
 import MobileBottomNav from '@/components/MobileBottomNav'
 import DealerSplash from '@/components/DealerSplash'
 import CampaignSplash from '@/components/CampaignSplash'
+import HolidaySplash from '@/components/HolidaySplash'
 import Link from 'next/link'
 import { CAMPAIGN } from '@/lib/campaignConfig'
 import { getCampaignShowcase } from '@/lib/campaign'
@@ -88,6 +89,7 @@ export default async function RootLayout({
           <SmartAssistant />
           <MobileBottomNav />
           {campaignLive && <CampaignSplash items={showcase!.items} maxDiscount={showcase!.maxDiscount} total={showcase!.total} />}
+          <HolidaySplash />
           <DealerSplash waitForCampaign={campaignLive} />
         </CartProvider>
       </body>

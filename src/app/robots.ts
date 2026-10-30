@@ -11,7 +11,7 @@ export default function robots(): MetadataRoute.Robots {
         userAgent: '*',
         allow: '/',
         // /kategori/*? : marka/model/sıralama filtreli adresler (her biri önbelleksiz sunucu işi ve DB sorgusu)
-        disallow: ['/admin/', '/api/', '/hesabim/', '/sepet', '/odeme', '/giris', '/kayit-ol', '/kategori/*?'],
+        disallow: ['/admin/', '/api/', '/hesabim/', '/sepet', '/odeme', '/giris', '/kayit-ol', '/kategori/*?', '/arama'],
       },
     ],
     sitemap: `${baseUrl}/sitemap.xml`,

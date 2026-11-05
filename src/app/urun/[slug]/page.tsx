@@ -1,3 +1,4 @@
+import { isPriceOnRequest } from '@/lib/priceOnRequest'
 import React from 'react'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
@@ -40,7 +41,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         ? `${name}${shortSuffix}`
         : name.slice(0, MAX_TITLE - shortSuffix.length - 1).trim() + '…' + shortSuffix
 
-  const price = formatPrice(withMpmPrice(product).sale_price)
+  const priceOnRequest = isPriceOnRequest(product.category?.slug)
+  const price = priceOnRequest ? 'Fiyat Sorunuz' : formatPrice(withMpmPrice(product).sale_price)
   const availability = product.stock_qty > 0 ? 'stokta' : 'şu an tükendi'
   const categoryIntro = getCategoryIntro(product.category?.slug, product.brand)
   const isDigital = product.category?.slug === 'yazilim'

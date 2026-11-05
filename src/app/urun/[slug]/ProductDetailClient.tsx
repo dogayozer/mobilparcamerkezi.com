@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useCart } from '@/context/CartContext'
 import { formatPrice } from '@/lib/utils'
+import { isPriceOnRequest, PRICE_ON_REQUEST_LABEL, PRICE_ON_REQUEST_NOTE, priceOnRequestWaUrl } from '@/lib/priceOnRequest'
 import {
   ShoppingBag,
   Zap,
@@ -32,11 +33,12 @@ export default function ProductDetailClient({ product }: { product: any }) {
       ? product.images
       : [{ url: 'https://placehold.co/600x600/1e293b/ffffff?text=MPM' }]
 
+  const priceOnRequest = isPriceOnRequest(product.category?.slug)
+
   const discountPercent =
-    product.reference_price && product.reference_price > product.sale_price
+    !priceOnRequest && product.reference_price && product.reference_price > product.sale_price
       ? Math.round(((product.reference_price - product.sale_price) / product.reference_price) * 100)
       : 0
-
   const isOutOfStock = product.stock_qty <= 0 || product.status === 'out_of_stock'
 
   const handleAddToCart = () => {
@@ -128,6 +130,22 @@ export default function ProductDetailClient({ product }: { product: any }) {
             )}
           </div>
 
+          {priceOnRequest ? (
+            <div className="mt-6 p-5 rounded-2xl bg-slate-50 border border-slate-200/80">
+              <span className="text-3xl sm:text-4xl font-black text-blue-700 tracking-tight block">{PRICE_ON_REQUEST_LABEL}</span>
+              <p className="text-sm text-slate-600 mt-3">{PRICE_ON_REQUEST_NOTE}</p>
+              <a
+                href={priceOnRequestWaUrl(product.title, product.barcode)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-4 w-full py-3.5 px-6 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-extrabold transition shadow-md flex items-center justify-center gap-2"
+              >
+                <Phone className="w-5 h-5" />
+                <span>WhatsApp ile Fiyat ve Stok Sorun</span>
+              </a>
+            </div>
+          ) : (
+          <>
           {/* Price Block */}
           <div className="mt-6 p-5 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
@@ -215,6 +233,8 @@ export default function ProductDetailClient({ product }: { product: any }) {
               </button>
             )}
           </div>
+          </>
+          )}
         </div>
 
         {/* Trust & Guarantee Box */}

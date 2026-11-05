@@ -1,3 +1,4 @@
+import { isPriceOnRequest } from '@/lib/priceOnRequest'
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { generatePayTRToken } from '@/lib/paytr'
@@ -38,6 +39,7 @@ export async function POST(req: Request) {
         original_excel_price: true,
         mpm_sale_price: true,
         mpm_reference_price: true,
+        category: { select: { slug: true } },
       },
     })
     const productsById = new Map(dbProducts.map((p) => [p.id, withMpmPrice(p)]))
@@ -48,6 +50,9 @@ export async function POST(req: Request) {
       const quantity = Math.floor(Number(it.quantity))
       if (!product || !(quantity > 0)) {
         return NextResponse.json({ error: `Ürün bulunamadı: ${it.title || it.productId}` }, { status: 400 })
+      }
+      if (isPriceOnRequest(product.category?.slug)) {
+        return NextResponse.json({ error: `"${product.title}" ürünü için fiyat ve stok bilgisini WhatsApp'tan sorunuz; lütfen sepetinizden çıkarın.` }, { status: 400 })
       }
       orderItems.push({ productId: product.id, title: product.title, price: product.sale_price, quantity })
     }

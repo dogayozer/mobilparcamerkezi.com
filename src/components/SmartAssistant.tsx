@@ -255,7 +255,7 @@ export default function SmartAssistant() {
                               {prod.title}
                             </p>
                             <span className="text-[10px] text-blue-600 font-extrabold">
-                              {prod.sale_price} ₺
+                              {prod.priceOnRequest ? 'Fiyat Sorunuz' : `${prod.sale_price} ₺`}
                             </span>
                           </div>
                           <ArrowRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />

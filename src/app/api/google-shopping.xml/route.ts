@@ -1,3 +1,4 @@
+import { PRICE_ON_REQUEST_SLUGS } from '@/lib/priceOnRequest'
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { withMpmPrice, mpmizeText, getCategoryIntro } from '@/lib/utils'
@@ -10,6 +11,7 @@ export async function GET() {
       where: {
         status: 'active',
         stock_qty: { gt: 0 },
+        NOT: { category: { slug: { in: PRICE_ON_REQUEST_SLUGS } } },
       },
       include: {
         images: { orderBy: { order: 'asc' }, take: 1 },

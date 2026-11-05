@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { useCart } from '@/context/CartContext'
 import { formatPrice } from '@/lib/utils'
 import { CAMPAIGN } from '@/lib/campaignConfig'
+import { isPriceOnRequest, PRICE_ON_REQUEST_LABEL, priceOnRequestWaUrl } from '@/lib/priceOnRequest'
 import { ShoppingBag, Check, Zap, ShieldCheck } from 'lucide-react'
 
 interface ProductCardProps {
@@ -33,8 +34,10 @@ export default function ProductCard({ product }: ProductCardProps) {
   const imageUrl =
     product.images?.[0]?.url || 'https://placehold.co/400x400/171410/f5b400?text=MPM'
 
+  const priceOnRequest = isPriceOnRequest(product.category?.slug)
+
   const discountPercent =
-    product.reference_price && product.reference_price > product.sale_price
+    !priceOnRequest && product.reference_price && product.reference_price > product.sale_price
       ? Math.round(((product.reference_price - product.sale_price) / product.reference_price) * 100)
       : 0
 
@@ -113,17 +116,31 @@ export default function ProductCard({ product }: ProductCardProps) {
         {/* Price & Action Section */}
         <div className="pt-2 border-t border-dashed border-ink/15 mt-2">
           <div className="flex items-baseline gap-2 mb-3">
-            <span className="text-base sm:text-lg font-display font-extrabold text-ink">
-              {formatPrice(product.sale_price)}
-            </span>
-            {product.reference_price && product.reference_price > product.sale_price && (
+            {priceOnRequest ? (
+              <span className="text-base sm:text-lg font-display font-extrabold text-ink">{PRICE_ON_REQUEST_LABEL}</span>
+            ) : (
+              <span className="text-base sm:text-lg font-display font-extrabold text-ink">
+                {formatPrice(product.sale_price)}
+              </span>
+            )}
+            {!priceOnRequest && product.reference_price && product.reference_price > product.sale_price && (
               <span className="text-xs font-mono text-ink-soft line-through">
                 {formatPrice(product.reference_price)}
               </span>
             )}
           </div>
 
-          {/* Add to Cart Button */}
+          {priceOnRequest ? (
+            <a
+              href={priceOnRequestWaUrl(product.title, product.barcode)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full py-2.5 px-3 rounded-md text-[11.5px] font-display font-bold uppercase transition flex items-center justify-center gap-2 bg-emerald-600 text-white hover:bg-emerald-700"
+            >
+              <span>WhatsApp'tan Sor</span>
+            </a>
+          ) : (
+          /* Add to Cart Button */
           <button
             onClick={handleAddToCart}
             disabled={isOutOfStock}
@@ -149,6 +166,7 @@ export default function ProductCard({ product }: ProductCardProps) {
               </>
             )}
           </button>
+          )}
         </div>
       </div>
     </div>

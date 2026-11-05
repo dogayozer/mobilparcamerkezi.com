@@ -1,3 +1,4 @@
+import { isPriceOnRequest } from '@/lib/priceOnRequest'
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { withMpmPrice } from '@/lib/utils'
@@ -32,12 +33,18 @@ export async function POST(req: Request) {
         mpm_reference_price: true,
         original_excel_price: true,
         stock_qty: true,
+        category: { select: { slug: true } },
       },
       orderBy: [{ has_real_photo: 'desc' }, { stock_qty: 'desc' }],
       take: 8,
     })
 
-    return NextResponse.json({ products: products.map(withMpmPrice) })
+    return NextResponse.json({
+      products: products.map(({ category, ...p }) => {
+        const mapped = withMpmPrice(p)
+        return isPriceOnRequest(category?.slug) ? { ...mapped, sale_price: null, reference_price: null, priceOnRequest: true } : mapped
+      }),
+    })
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }

@@ -1,3 +1,4 @@
+import { isPriceOnRequest } from '@/lib/priceOnRequest'
 import { NextResponse } from 'next/server'
 import { generateText, tool, stepCountIs } from 'ai'
 import { google } from '@ai-sdk/google'
@@ -93,12 +94,18 @@ Görevlerin:
                 mpm_reference_price: true,
                 original_excel_price: true,
                 stock_qty: true,
+                category: { select: { slug: true } },
               },
               orderBy: [{ has_real_photo: 'desc' }, { stock_qty: 'desc' }],
               take: 5,
             })
 
-            const mapped = products.map(withMpmPrice)
+            const mapped = products.map(({ category, ...p }) => {
+              const m: any = withMpmPrice(p)
+              return isPriceOnRequest(category?.slug)
+                ? { ...m, sale_price: null, reference_price: null, priceOnRequest: true, note: 'Fiyat gösterilmez: müşteriye "Fiyat Sorunuz, stok ve fiyat için WhatsApp ile iletişime geçin" de.' }
+                : m
+            })
             foundProducts = mapped
 
             if (mapped.length === 0) {

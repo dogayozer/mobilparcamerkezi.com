@@ -270,7 +270,7 @@ export default function ProductDetailClient({ product }: { product: any }) {
 
         {/* WhatsApp Support Button */}
         <a
-          href={`https://wa.me/905323913141?text=${encodeURIComponent(
+          href={`https://wa.me/905322324499?text=${encodeURIComponent(
             `Merhaba, "${product.title}" (${product.barcode}) ürünü hakkında bilgi almak istiyorum.`
           )}`}
           target="_blank"

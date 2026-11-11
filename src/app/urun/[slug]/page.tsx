@@ -13,7 +13,7 @@ interface Props {
   params: Promise<{ slug: string }>
 }
 
-export const revalidate = 60
+export const revalidate = 3600
 
 // Google arama sonuçlarında <title> ~60, meta description ~155 karakterden
 // sonra kesiliyor. Ürüne özel içerik (marka/model/parça adı) genel site

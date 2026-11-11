@@ -1,24 +1,50 @@
 import { PRICE_ON_REQUEST_SLUGS } from '@/lib/priceOnRequest'
 import { NextResponse } from 'next/server'
+import { unstable_cache } from 'next/cache'
 import { prisma } from '@/lib/prisma'
 import { withMpmPrice, mpmizeText, getCategoryIntro } from '@/lib/utils'
 
 export const dynamic = 'force-dynamic'
 
+// Her istekte 2000 ürünü tüm sütunlarıyla çekmek Neon compute/ağ maliyeti yaratıyordu.
+// Sadece feed'in kullandığı alanlar, veri önbelleği öğe sınırı (~2 MB) altında kalan parçalar halinde saatte bir yenilenir.
+const CHUNK_SIZE = 500
+const CHUNK_COUNT = 4
+const where = {
+  status: 'active',
+  stock_qty: { gt: 0 },
+  NOT: { category: { slug: { in: PRICE_ON_REQUEST_SLUGS } } },
+}
+
+const getChunk = unstable_cache(
+  (index: number) =>
+    prisma.product.findMany({
+      where,
+      orderBy: { id: 'asc' },
+      skip: index * CHUNK_SIZE,
+      take: CHUNK_SIZE,
+      select: {
+        slug: true,
+        title: true,
+        brand: true,
+        barcode: true,
+        sale_price: true,
+        mpm_sale_price: true,
+        original_excel_price: true,
+        description_raw: true,
+        images: { select: { url: true }, orderBy: { order: 'asc' }, take: 1 },
+        category: { select: { name: true, slug: true } },
+      },
+    }),
+  ['mpm-feed-products-chunk'],
+  { revalidate: 3600 }
+)
+
 export async function GET() {
   try {
-    const products = await prisma.product.findMany({
-      where: {
-        status: 'active',
-        stock_qty: { gt: 0 },
-        NOT: { category: { slug: { in: PRICE_ON_REQUEST_SLUGS } } },
-      },
-      include: {
-        images: { orderBy: { order: 'asc' }, take: 1 },
-        category: true,
-      },
-      take: 2000,
-    })
+    // Sırayla: paralel istek Prisma bağlantı havuzunu tüketip zaman aşımına düşüyor
+    const products = []
+    for (let i = 0; i < CHUNK_COUNT; i++) products.push(...(await getChunk(i)))
 
     const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.mobilparcamerkezi.com'
 

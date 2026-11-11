@@ -17,7 +17,7 @@ import {
   Smartphone
 } from 'lucide-react'
 
-export const revalidate = 60
+export const revalidate = 300
 
 export default async function HomePage() {
   let featuredProducts: any[] = []

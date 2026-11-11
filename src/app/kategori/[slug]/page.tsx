@@ -12,7 +12,7 @@ interface Props {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
-export const revalidate = 60
+export const revalidate = 3600
 
 const MAX_TITLE = 60
 const MAX_DESC = 155

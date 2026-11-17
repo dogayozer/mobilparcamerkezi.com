@@ -6,6 +6,7 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import CartDrawer from '@/components/CartDrawer'
 import SmartAssistant from '@/components/SmartAssistant'
+import { WhatsAppButton } from '@/components/WhatsAppButton'
 import MobileBottomNav from '@/components/MobileBottomNav'
 import DealerSplash from '@/components/DealerSplash'
 import CampaignSplash from '@/components/CampaignSplash'
@@ -86,6 +87,7 @@ export default async function RootLayout({
           <main className="flex-1">{children}</main>
           <Footer settings={settings} />
           <CartDrawer />
+          <WhatsAppButton />
           <SmartAssistant />
           <MobileBottomNav />
           {campaignLive && <CampaignSplash items={showcase!.items} maxDiscount={showcase!.maxDiscount} total={showcase!.total} />}
